@@ -5,7 +5,11 @@ from jwst.ramp_fitting.ramp_fit_step import RampFitStep
 
 from ..helpers import add_suffix
 
-BIGDATA = os.environ['TEST_BIGDATA']
+pytestmark = [
+    pytest.mark.usefixtures('_jail'),
+    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
+                       reason='requires --bigdata')
+]
 
 def test_ramp_fit_miri2():
     """
@@ -22,7 +26,7 @@ def test_ramp_fit_miri2():
     except:
         pass
 
-    RampFitStep.call(BIGDATA+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_jump.fits',
+    RampFitStep.call(_bigdata+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_jump.fits',
                       save_opt=True,
                       opt_name='rampfit2_opt_out.fits',
                       output_file=output_file_base
@@ -31,7 +35,7 @@ def test_ramp_fit_miri2():
     # compare primary output
     n_priout = output_files[0]
     h = pf.open( n_priout )
-    n_priref = BIGDATA+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_ramp.fits'
+    n_priref = _bigdata+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_ramp.fits'
     href = pf.open( n_priref )
     newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
     newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
@@ -40,21 +44,12 @@ def test_ramp_fit_miri2():
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
     )
-
-    print (' Fitsdiff comparison between the standard output file - a:', n_priout)
-    print (' ... and the reference file - b:', n_priref)
-
-    result.report()
-    try:
-        assert result.identical == True
-    except AssertionError as e:
-        print(result.report())
-        raise AssertionError(e)
+    assert result.identical, result.report()
 
     # compare integration-specific output
     n_intout = output_files[1]
     h = pf.open( n_intout )
-    n_intref = BIGDATA+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_int.fits'
+    n_intref = _bigdata+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_int.fits'
     href = pf.open( n_intref )
     newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
     newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
@@ -63,21 +58,12 @@ def test_ramp_fit_miri2():
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
     )
-
-    print (' Fitsdiff comparison between the integration-specfic output file - a:', n_intout)
-    print (' ... and the reference file - b:', n_intref)
-
-    result.report()
-    try:
-        assert result.identical == True
-    except AssertionError as e:
-        print(result.report())
-        raise AssertionError(e)
+    assert result.identical, result.report()
 
     # compare optional output
     n_optout = 'rampfit2_opt_out_fitopt.fits'
     h = pf.open( n_optout )
-    n_optref = BIGDATA+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_opt.fits'
+    n_optref = _bigdata+'/miri/test_ramp_fit/jw80600012001_02101_00003_mirimage_opt.fits'
     href = pf.open( n_optref )
     newh = pf.HDUList([h['primary'],h['slope'],h['sigslope'],h['yint'],h['sigyint'],h['pedestal'],h['weights'],h['crmag']])
     newhref = pf.HDUList([href['primary'],href['slope'],href['sigslope'],href['yint'],href['sigyint'],href['pedestal'],href['weights'],href['crmag']])
@@ -86,13 +72,4 @@ def test_ramp_fit_miri2():
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
     )
-
-    print (' Fitsdiff comparison between the optional output file - a:', n_optout)
-    print (' ... and the reference file - b:', n_optref)
-
-    result.report()
-    try:
-        assert result.identical == True
-    except AssertionError as e:
-        print(result.report())
-        raise AssertionError(e)
+    assert result.identical, result.report()

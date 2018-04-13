@@ -3,7 +3,12 @@ import pytest
 from astropy.io import fits as pf
 from jwst.pipeline.calwebb_ami3 import Ami3Pipeline
 
-BIGDATA = os.environ['TEST_BIGDATA']
+pytestmark = [
+    pytest.mark.usefixtures('_jail'),
+    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
+                       reason='requires --bigdata')
+]
+
 
 def test_ami_pipeline():
     """
@@ -15,10 +20,10 @@ def test_ami_pipeline():
     step.save_averages = True
     step.ami_analyze.oversample = 3
     step.ami_analyze.rotation=1.49
-    step.run(BIGDATA+'/niriss/test_ami_pipeline/test_lg1_asn.json')
+    step.run(_bigdata+'/niriss/test_ami_pipeline/test_lg1_asn.json')
 
     h = pf.open('test_targ_aminorm.fits')
-    href = pf.open(BIGDATA+'/niriss/test_ami_pipeline/ami_pipeline_targ_lgnorm.fits')
+    href = pf.open(_bigdata+'/niriss/test_ami_pipeline/ami_pipeline_targ_lgnorm.fits')
     newh = pf.HDUList([h['primary'],h['fit'],h['resid'],h['closure_amp'],
                        h['closure_pha'],h['fringe_amp'],h['fringe_pha'],
                        h['pupil_pha'],h['solns']])
@@ -31,10 +36,4 @@ def test_ami_pipeline():
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
     )
-    result.report()
-    try:
-        assert result.identical == True
-    except AssertionError as e:
-        print(result.report())
-        raise AssertionError(e)
-
+    assert result.identical, result.report()
