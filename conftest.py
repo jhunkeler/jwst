@@ -18,10 +18,26 @@ pytest_plugins = [
     'asdf.tests.schema_tester'
 ]
 
-# Add option to run slow tests
+
 def pytest_addoption(parser):
+    # Add option to run slow tests
     parser.addoption(
         "--runslow",
         action="store_true",
         help="run slow tests"
     )
+
+    # Add option to use big data sets
+    parser.addoption(
+        "--bigdata",
+        action="store_true",
+        help="use big data sets (intranet)"
+    )
+
+
+@pytest.fixture(scope='function')
+def _jail(tmpdir):
+    """ Perform test a pristine temporary working directory
+    """
+    os.chdir(tmpdir.strpath)
+    yield
