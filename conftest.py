@@ -1,4 +1,5 @@
 """Project default for pytest"""
+import os
 import pytest
 
 from astropy.tests.plugins.display import PYTEST_HEADER_MODULES
