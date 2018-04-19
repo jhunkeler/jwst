@@ -3,6 +3,8 @@ import os
 import pytest
 import re
 
+from .io import _select_bigdata
+
 
 # Decorator to indicate slow tests
 try:
@@ -18,8 +20,8 @@ except AttributeError:
 
 # Decorator to indicate TEST_BIGDATA required
 require_bigdata = pytest.mark.skipif(
-    'TEST_BIGDATA' not in os.environ,
-    reason='"TEST_BIGDATA" environmental not defined. Cannot access test data.'
+    _select_bigdata() is None,
+    reason='Big data is not available on this system.'
 )
 
 
