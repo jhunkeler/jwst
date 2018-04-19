@@ -18,9 +18,9 @@ except AttributeError:
         reason="No reason, just a dummy"
     )
 
-# Decorator to indicate TEST_BIGDATA required
+# Decorator to indicate BIGDATA required
 require_bigdata = pytest.mark.skipif(
-    _select_bigdata() is None,
+    not pytest.config.getoption('bigdata') or _select_bigdata() is None,
     reason='Big data is not available on this system.'
 )
 
