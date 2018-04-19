@@ -1,3 +1,64 @@
+import os
+import re
+import requests
+from astropy.io import fits
+
+RE_URL = re.compile('\w+://\S+')
+
+default_compare = dict(
+    ignore_keywords=['DATE', 'CAL_VER', 'CAL_VCS', 'CRDS_VER', 'CRDS_CTX'],
+    keys=['primary', 'sci', 'dq'],
+    rtol=0.000001,
+)
+
+
+def cmp_fitshdr(left, right, **kwargs):
+    """Compare FITS header values using keywords
+
+    Parameters
+    ----------
+    left, right: str
+        The FITS files to compare
+
+    keys: list
+        The header keywords to compare `left` and `right`
+        (See `defaults_compare` for initial values)
+
+    rtol: float
+        The relative difference to allow when comparing two float values either
+        in header values, image arrays, or table columns.
+        (See `defaults_compare` for initial values)
+
+
+    kwargs: dict
+        Additional arguments to be passed to `FITSDiff`
+
+    Returns
+    -------
+    None
+        Assert left and right are identical
+    """
+    assert isinstance(left, str)
+    assert isinstance(right, str)
+
+    keys = kwargs.get('keys', default_compare['keys'])
+    rtol = kwargs.get('rtol', default_compare['rtol'])
+    ignore_keywords = kwargs.get('ignore_keywords',
+                                 default_compare['ignore_keywords'])
+
+    assert isinstance(keys, list)
+    assert isinstance(rtol, float)
+    assert isinstance(ignore_keywords, list)
+
+    with fits.open(left) as a:
+        with fits.open(right) as b:
+            result = fits.diff.FITSDiff(fits.HDUList([a[kw] for kw in keys]),
+                                        fits.HDUList([b[kw] for kw in keys]),
+                                        ignore_keywords=ignore_keywords,
+                                        rtol=rtol,
+                                        **kwargs)
+
+    assert result.identical, result.report()
 
 
 # Check strings based on words using length precision
@@ -44,3 +105,33 @@ def test_word_precision_check():
     assert word_precision_check(s1, s2, length=1)
     assert not word_precision_check(s2, s3)
     assert word_precision_check(s2, s4, length=2)
+
+
+def abspath(filepath):
+    """Get the absolute file path"""
+    return os.path.abspath(os.path.expanduser(os.path.expandvars(filepath)))
+
+
+def download(url, dest):
+    """Simple http/https downloader
+    """
+    dest = os.path.abspath(dest)
+
+    with requests.get(url, stream=True) as r:
+        with open(dest, 'w+b') as data:
+            for chunk in r.iter_content(chunk_size=0x4000):
+                data.write(chunk)
+
+    return dest
+
+
+def check_url(url):
+    """ Determine if `url` can be resolved without error
+    """
+    if RE_URL.match(url) is None:
+        return False
+
+    r = requests.head(url, allow_redirects=True)
+    if r.status_code >= 400:
+        return False
+    return True

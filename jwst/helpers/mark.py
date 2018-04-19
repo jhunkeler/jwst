@@ -3,25 +3,18 @@ import os
 import pytest
 import re
 
-from .io import _select_bigdata
-
 
 # Decorator to indicate slow tests
-try:
-    runslow = pytest.mark.skipif(
-        not pytest.config.getoption("--runslow"),
-        reason="need --runslow option to run"
-    )
-except AttributeError:
-    runslow = pytest.mark.skipif(
-        True,
-        reason="No reason, just a dummy"
-    )
+runslow = slow = pytest.mark.skipif(
+    not pytest.config.getoption("--runslow"),
+    reason="need --runslow option to run"
+)
+
 
 # Decorator to indicate BIGDATA required
 require_bigdata = pytest.mark.skipif(
-    not pytest.config.getoption('bigdata') or _select_bigdata() is None,
-    reason='Big data is not available on this system.'
+    not pytest.config.getoption('bigdata'),
+    reason='need --bigdata option to run'
 )
 
 
