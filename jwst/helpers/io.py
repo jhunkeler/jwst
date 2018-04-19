@@ -16,6 +16,11 @@ class BigdataError(Exception):
     pass
 
 
+def abspath(filepath):
+    """Get the absolute file path"""
+    return os.path.abspath(os.path.expanduser(os.path.expandvars(filepath)))
+
+
 def check_url(url):
     """ Determine if `url` can be resolved without error
     """
@@ -46,7 +51,7 @@ def _select_bigdata():
         if os.path.exists(path) or check_url(path):
             return path
 
-    raise BigdataError('No data resources are available.')
+    return None
 
 
 def get_bigdata(*args):
