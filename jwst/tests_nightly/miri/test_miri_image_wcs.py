@@ -25,8 +25,8 @@ def test_miri_image_wcs():
     except:
         pass
 
-    input_file = os.path.join(_bigdata, 'miri', 'test_wcs', 'image', 'jw00001001001_01101_00001_MIRIMAGE_ramp_fit.fits')
-    ref_file = os.path.join(_bigdata, 'miri', 'test_wcs', 'image', 'jw00001001001_01101_00001_MIRIMAGE_assign_wcs.fits')
+    input_file = get_bigdata('miri', 'test_wcs', 'image', 'jw00001001001_01101_00001_MIRIMAGE_ramp_fit.fits')
+    ref_file = get_bigdata('miri', 'test_wcs', 'image', 'jw00001001001_01101_00001_MIRIMAGE_assign_wcs.fits')
 
     AssignWcsStep.call(input_file,
                        output_file=output_file_base

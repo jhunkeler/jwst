@@ -25,8 +25,8 @@ def test_miri_slitless_wcs():
     except:
         pass
 
-    input_file = os.path.join(_bigdata, 'miri', 'test_wcs', 'slitless', 'jw80600012001_02101_00003_mirimage_rateints.fits')
-    ref_file = os.path.join(_bigdata, 'miri', 'test_wcs', 'slitless', 'jw80600012001_02101_00003_mirimage_assign_wcs.fits')
+    input_file = get_bigdata('miri', 'test_wcs', 'slitless', 'jw80600012001_02101_00003_mirimage_rateints.fits')
+    ref_file = get_bigdata('miri', 'test_wcs', 'slitless', 'jw80600012001_02101_00003_mirimage_assign_wcs.fits')
 
     AssignWcsStep.call(input_file,
                        output_file=output_file_base
