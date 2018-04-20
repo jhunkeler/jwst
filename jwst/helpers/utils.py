@@ -3,6 +3,9 @@ import re
 import requests
 from astropy.io import fits
 
+__all__ = ['cmp_fitshdr', 'word_precision_check',
+           'abspath', 'download', 'check_url']
+
 RE_URL = re.compile('\w+://\S+')
 
 default_compare = dict(
