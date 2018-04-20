@@ -5,6 +5,7 @@ from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.pipeline.calwebb_detector1 import Detector1Pipeline
 
 
+@require_bigdata
 def test_detector1pipeline2():
     """
 

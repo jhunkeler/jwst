@@ -7,6 +7,7 @@ from jwst.dark_current.dark_current_step import DarkCurrentStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_dark_current_miri():
     """
 

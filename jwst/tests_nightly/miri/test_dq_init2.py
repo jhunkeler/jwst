@@ -7,6 +7,7 @@ from jwst.dq_init.dq_init_step import DQInitStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_dq_init_miri2():
     """
 

@@ -7,6 +7,7 @@ from jwst.extract_1d.extract_1d_step import Extract1dStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_extract1d_miri():
     """
 

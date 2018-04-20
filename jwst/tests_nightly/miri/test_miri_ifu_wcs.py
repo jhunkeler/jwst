@@ -12,6 +12,7 @@ from jwst.datamodels import ImageModel, fits_support
 
 
 
+@require_bigdata
 def test_miri_ifu_wcs():
     """
 

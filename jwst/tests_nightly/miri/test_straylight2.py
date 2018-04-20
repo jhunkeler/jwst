@@ -7,6 +7,7 @@ from jwst.straylight.straylight_step import StraylightStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_straylight2_miri():
     """
 

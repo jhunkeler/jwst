@@ -7,6 +7,7 @@ from jwst.flatfield.flat_field_step import FlatFieldStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_flat_field_miri2():
     """
 

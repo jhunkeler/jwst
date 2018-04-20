@@ -7,6 +7,7 @@ from jwst.rscd.rscd_step import RSCD_Step
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_rscd_miri2():
     """
 

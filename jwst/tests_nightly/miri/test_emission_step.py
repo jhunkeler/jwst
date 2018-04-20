@@ -7,6 +7,7 @@ from jwst.emission.emission_step import EmissionStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_emission_miri():
     """
 

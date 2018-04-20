@@ -7,6 +7,7 @@ from jwst.linearity.linearity_step import LinearityStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_linearity_miri2():
     """
 

@@ -7,6 +7,7 @@ from jwst.srctype.srctype_step import SourceTypeStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_srctype2():
     """
 
