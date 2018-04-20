@@ -12,7 +12,7 @@ from jwst.datamodels import ImageModel, fits_support
 
 
 
-def test_miri_ifu_wcs(_bigdata):
+def test_miri_ifu_wcs():
     """
 
     Regression test of creating a WCS object and doing pixel to sky transformation.

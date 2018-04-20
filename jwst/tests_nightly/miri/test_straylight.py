@@ -7,7 +7,7 @@ from jwst.straylight.straylight_step import StraylightStep
 from ..helpers import add_suffix
 
 
-def test_straylight1_miri(_bigdata):
+def test_straylight1_miri():
     """
 
     Regression test of straylight performed on MIRI IFUSHORT data.

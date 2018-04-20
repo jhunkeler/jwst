@@ -7,7 +7,7 @@ from jwst.emission.emission_step import EmissionStep
 from ..helpers import add_suffix
 
 
-def test_emission_miri(_bigdata):
+def test_emission_miri():
     """
 
     Regression test of emission step performed on calibrated miri data.

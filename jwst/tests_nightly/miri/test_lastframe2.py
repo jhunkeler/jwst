@@ -7,7 +7,7 @@ from jwst.lastframe.lastframe_step import LastFrameStep
 from ..helpers import add_suffix
 
 
-def test_lastframe_miri2(_bigdata):
+def test_lastframe_miri2():
     """
 
     Regression test of lastframe step performed on MIRI data.

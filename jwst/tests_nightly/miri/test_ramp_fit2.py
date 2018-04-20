@@ -7,7 +7,7 @@ from jwst.ramp_fitting.ramp_fit_step import RampFitStep
 from ..helpers import add_suffix
 
 
-def test_ramp_fit_miri2(_bigdata):
+def test_ramp_fit_miri2():
     """
 
     Regression test of ramp_fit step performed on MIRI data.

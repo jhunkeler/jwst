@@ -7,7 +7,7 @@ from astropy.io import fits as pf
 from jwst.lib.set_telescope_pointing import add_wcs
 
 
-def test_miri_setpointing(_bigdata):
+def test_miri_setpointing():
     """
     Regression test of the set_telescope_pointing script on a level-1b MIRI file.
     """

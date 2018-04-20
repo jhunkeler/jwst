@@ -5,7 +5,7 @@ from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.pipeline.calwebb_detector1 import Detector1Pipeline
 
 
-def test_detector1pipeline1(_bigdata):
+def test_detector1pipeline1():
     """
 
     Regression test of calwebb_detector1 pipeline performed on MIRI data.

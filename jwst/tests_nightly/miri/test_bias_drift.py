@@ -7,7 +7,7 @@ from jwst.refpix.refpix_step import RefPixStep
 from ..helpers import add_suffix
 
 
-def test_refpix_miri(_bigdata):
+def test_refpix_miri():
     """
 
     Regression test of refpix step performed on MIRI data.

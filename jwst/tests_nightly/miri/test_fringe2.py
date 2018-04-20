@@ -7,7 +7,7 @@ from jwst.fringe.fringe_step import FringeStep
 from ..helpers import add_suffix
 
 
-def test_fringe_miri2(_bigdata):
+def test_fringe_miri2():
     """
 
     Regression test of fringe performed on MIRI data.
