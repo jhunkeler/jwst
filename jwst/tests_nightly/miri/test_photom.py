@@ -7,6 +7,7 @@ from jwst.photom.photom_step import PhotomStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_photom_miri():
     """
 

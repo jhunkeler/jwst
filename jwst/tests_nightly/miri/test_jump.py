@@ -7,6 +7,7 @@ from jwst.jump.jump_step import JumpStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_jump_miri():
     """
 

@@ -11,6 +11,7 @@ from ..helpers import add_suffix
 
 
 
+@require_bigdata
 def test_miri_fixed_slit_wcs():
     """
 

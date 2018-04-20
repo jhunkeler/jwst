@@ -7,6 +7,7 @@ from jwst.refpix.refpix_step import RefPixStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_refpix_miri():
     """
 

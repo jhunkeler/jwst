@@ -11,6 +11,7 @@ from jwst.datamodels import CubeModel
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_miri_slitless_wcs():
     """
 

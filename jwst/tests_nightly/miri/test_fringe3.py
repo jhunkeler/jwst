@@ -7,6 +7,7 @@ from jwst.fringe.fringe_step import FringeStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_fringe_miri3():
     """
 

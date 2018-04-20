@@ -7,6 +7,7 @@ from jwst.lastframe.lastframe_step import LastFrameStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_lastframe_miri2():
     """
 

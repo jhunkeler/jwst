@@ -6,6 +6,7 @@ from jwst.cube_build.cube_build_step import CubeBuildStep
 from jwst import datamodels
 
 
+@require_bigdata
 def test_cubebuild_miri():
     """
 

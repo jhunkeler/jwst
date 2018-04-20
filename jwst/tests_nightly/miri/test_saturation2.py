@@ -7,6 +7,7 @@ from jwst.saturation.saturation_step import SaturationStep
 from ..helpers import add_suffix
 
 
+@require_bigdata
 def test_saturation_miri2():
     """
 
