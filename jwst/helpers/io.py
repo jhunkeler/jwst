@@ -3,6 +3,8 @@ import shutil
 
 from .utils import check_url, download
 
+__all__ = ['BigdataError', 'get_bigdata']
+
 
 BIGDATA_PATHS = [
     os.environ.get('TEST_BIGDATA', '/data4/jwst_test_data'),
