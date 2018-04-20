@@ -7,7 +7,7 @@ from jwst.extract_1d.extract_1d_step import Extract1dStep
 from ..helpers import add_suffix
 
 
-def test_extract1d_miri(_bigdata):
+def test_extract1d_miri():
     """
 
     Regression test of extract_1d step performed on MIRI LRS fixed-slit data.

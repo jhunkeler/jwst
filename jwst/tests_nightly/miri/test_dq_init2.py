@@ -7,7 +7,7 @@ from jwst.dq_init.dq_init_step import DQInitStep
 from ..helpers import add_suffix
 
 
-def test_dq_init_miri2(_bigdata):
+def test_dq_init_miri2():
     """
 
     Regression test of dq_init step performed on uncalibrated MIRI data.

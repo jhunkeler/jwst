@@ -7,7 +7,7 @@ from jwst.linearity.linearity_step import LinearityStep
 from ..helpers import add_suffix
 
 
-def test_linearity_miri2(_bigdata):
+def test_linearity_miri2():
     """
 
     Regression test of linearity step performed on MIRI data.

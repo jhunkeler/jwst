@@ -11,7 +11,7 @@ from jwst.datamodels import ImageModel
 from ..helpers import add_suffix
 
 
-def test_miri_image_wcs(_bigdata):
+def test_miri_image_wcs():
     """
 
     Regression test of creating a WCS object and doing pixel to sky transformation.

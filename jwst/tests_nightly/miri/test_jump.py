@@ -7,7 +7,7 @@ from jwst.jump.jump_step import JumpStep
 from ..helpers import add_suffix
 
 
-def test_jump_miri(_bigdata):
+def test_jump_miri():
     """
 
     Regression test of jump step performed on MIRI data.

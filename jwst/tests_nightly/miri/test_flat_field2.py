@@ -7,7 +7,7 @@ from jwst.flatfield.flat_field_step import FlatFieldStep
 from ..helpers import add_suffix
 
 
-def test_flat_field_miri2(_bigdata):
+def test_flat_field_miri2():
     """
 
     Regression test of flat_field step performed on MIRI data.

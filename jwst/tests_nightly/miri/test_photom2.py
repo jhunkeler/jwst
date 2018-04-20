@@ -7,7 +7,7 @@ from jwst.photom.photom_step import PhotomStep
 from ..helpers import add_suffix
 
 
-def test_photom_miri2(_bigdata):
+def test_photom_miri2():
     """
 
     Regression test of photom step performed on MIRI LRS slitless data.

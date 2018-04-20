@@ -7,7 +7,7 @@ from jwst.srctype.srctype_step import SourceTypeStep
 from ..helpers import add_suffix
 
 
-def test_srctype2(_bigdata):
+def test_srctype2():
     """
 
     Regression test of srctype step performed on MIRI LRS slitless data.

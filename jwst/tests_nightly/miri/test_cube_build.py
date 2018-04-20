@@ -6,7 +6,7 @@ from jwst.cube_build.cube_build_step import CubeBuildStep
 from jwst import datamodels
 
 
-def test_cubebuild_miri(_bigdata):
+def test_cubebuild_miri():
     """
 
     Regression test of cube_build performed on MIRI MRS data.

@@ -7,7 +7,7 @@ from jwst.rscd.rscd_step import RSCD_Step
 from ..helpers import add_suffix
 
 
-def test_rscd_miri2(_bigdata):
+def test_rscd_miri2():
     """
 
     Regression test of RSCD step performed on MIRI data.

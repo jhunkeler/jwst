@@ -11,7 +11,7 @@ from jwst.datamodels import CubeModel
 from ..helpers import add_suffix
 
 
-def test_miri_slitless_wcs(_bigdata):
+def test_miri_slitless_wcs():
     """
 
     Regression test of creating a WCS object and doing pixel to sky transformation.

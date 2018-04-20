@@ -7,7 +7,7 @@ from jwst.dark_current.dark_current_step import DarkCurrentStep
 from ..helpers import add_suffix
 
 
-def test_dark_current_miri(_bigdata):
+def test_dark_current_miri():
     """
 
     Regression test of dark current step performed on MIRI data.
