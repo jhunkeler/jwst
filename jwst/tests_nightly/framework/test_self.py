@@ -1,26 +1,40 @@
 import os
 import pytest
 
-from jwst.helpers.io import get_bigdata
+from jwst.helpers.io import (get_bigdata, _select_bigdata, BigdataError)
+from jwst.helpers.mark import require_bigdata
+from jwst.helpers.utils import download
 
 
-@pytest.mark.usefixtures('_jail')
+@require_bigdata
 class TestBigdata:
-    _starting_path = os.path.abspath(os.curdir)
-
-    @pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-    def test_bigdata(self):
-        """ Test ability to retrieve big data from a list of
-        predefined resources (defined in jwst.helpers.io).
+    """ Ensure BIGDATA resources and helper functions are working correctly.
+    """
+    def test_get_bigdata_arg_multi(self):
+        """ Use split path elements
         """
         filename = get_bigdata('helpers', 'alive', 'alive-0.txt')
         assert os.path.exists(filename)
         assert os.stat(filename).st_size
 
-    def test_jail(self):
+    def test_get_bigdata_arg_single(self):
+        """ Use single long path
+        """
+        filename = get_bigdata('helpers/alive/alive-0.txt')
+        assert os.path.exists(filename)
+        assert os.stat(filename).st_size
+
+    def test_get_bigdata_raises_BigdataError(self):
+        with pytest.raises(BigdataError):
+            get_bigdata('THI5', 'PR0B4BLY', 'D03S', 'N0T', '3X15T')
+
+
+
+class TestJailFixture:
+    _starting_path = os.path.abspath(os.curdir)
+
+    # _jail fixture is set "autouse=True" in conftest.py
+    def test_working_directory(self):
         """ Ensures the current working directory has been changed
         """
         assert os.path.abspath(os.curdir) != self._starting_path
-
-
