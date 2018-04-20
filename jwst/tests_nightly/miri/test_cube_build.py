@@ -1,14 +1,10 @@
 import os
 import pytest
 from astropy.io import fits as pf
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.cube_build.cube_build_step import CubeBuildStep
 from jwst import datamodels
 
-pytestmark = [
-    pytest.mark.usefixtures('_jail'),
-    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-]
 
 def test_cubebuild_miri(_bigdata):
     """

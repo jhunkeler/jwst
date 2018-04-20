@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pytest
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 
 from numpy.testing import utils
 from jwst.assign_wcs import AssignWcsStep
@@ -8,11 +9,6 @@ from jwst.datamodels import ImageModel
 
 from ..helpers import add_suffix
 
-pytestmark = [
-    pytest.mark.usefixtures('_jail'),
-    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-]
 
 
 def test_miri_fixed_slit_wcs(_bigdata):

@@ -1,13 +1,9 @@
 import os
 import pytest
 from astropy.io import fits as pf
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.pipeline.calwebb_detector1 import Detector1Pipeline
 
-pytestmark = [
-    pytest.mark.usefixtures('_jail'),
-    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-]
 
 def test_detector1pipeline2(_bigdata):
     """

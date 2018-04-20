@@ -1,6 +1,7 @@
 import os
 import pytest
 import numpy as np
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 
 from numpy.testing import utils
 
@@ -9,11 +10,6 @@ from jwst.datamodels import ImageModel
 
 from ..helpers import add_suffix
 
-pytestmark = [
-    pytest.mark.usefixtures('_jail'),
-    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-]
 
 def test_miri_image_wcs(_bigdata):
     """

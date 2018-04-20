@@ -1,6 +1,7 @@
 import os
 import pytest
 
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 import numpy as  np
 from numpy.testing import utils
 from asdf import AsdfFile
@@ -9,11 +10,6 @@ from astropy.io import fits
 from jwst.assign_wcs import AssignWcsStep
 from jwst.datamodels import ImageModel, fits_support
 
-pytestmark = [
-    pytest.mark.usefixtures('_jail'),
-    pytest.mark.skipif(not pytest.config.getoption('bigdata'),
-                       reason='requires --bigdata')
-]
 
 
 def test_miri_ifu_wcs(_bigdata):
