@@ -64,6 +64,54 @@ def cmp_fitshdr(left, right, **kwargs):
     assert result.identical, result.report()
 
 
+def cmp_gen_hdrkeywords(fitsobj, base, keywords, limit=0, start=0):
+    """Generate list of FITS header elements to compare
+
+    TODO: Use correct terminology
+
+    Parameters
+    ----------
+    fitsobj: HDUList
+        TODO
+
+    base: str
+        Primary keyword
+
+    keywords: list
+        Additional keywords to use
+
+    limit: int
+        Number of extensions
+        Note: 1-indexed
+
+    start: int
+        Start with extension number
+
+    Returns
+    -------
+    output: list
+        Keywords to compare
+
+    """
+    assert isinstance(fitsobj, fits.HDUList)
+    assert isinstance(base, str)
+    assert isinstance(keywords, list)
+
+    output = list(fitsobj[base])
+
+    if limit and not start:
+        start += 1
+
+    for idx in range(start, limit + 1):
+        for key in keywords:
+            if not limit:
+                output.append(fitsobj[key])
+            else:
+                output.append(fitsobj[key, idx])
+
+    return output
+
+
 # Check strings based on words using length precision
 def word_precision_check(str1, str2, length=5):
     """Check to strings word-by-word based for word length
