@@ -3,8 +3,9 @@ import re
 import requests
 from astropy.io import fits
 
-__all__ = ['cmp_fitshdr', 'word_precision_check',
-           'abspath', 'download', 'check_url']
+__all__ = ['cmp_fitshdr', 'cmp_gen_hdrkeywords',
+           'word_precision_check', 'abspath',
+           'download', 'check_url']
 
 RE_URL = re.compile('\w+://\S+')
 
