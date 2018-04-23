@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.pipeline.calwebb_spec2 import Spec2Pipeline
 
 pytestmark = [
@@ -26,23 +26,23 @@ def test_nirisssoss2pipeline1(_bigdata):
     step.run(_bigdata+'/pipelines/jw00034001001_01101_00001_NIRISS_rate_ref.fits')
 
     n_cr = 'jw00034001001_01101_00001_NIRISS_rate_ref_calints.fits'
-    h = pf.open(n_cr)
+    h = fits.open(n_cr)
     n_ref = _bigdata+'/pipelines/jw00034001001_01101_00001_NIRISS_cal_ref.fits'
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq'],h['relsens']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq'],href['relsens']])
-    result = pf.diff.FITSDiff(newh, newhref,
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['dq'],h['relsens']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq'],href['relsens']])
+    result = fits.diff.FITSDiff(newh, newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001)
     assert result.identical, result.report()
 
     n_cr = 'jw00034001001_01101_00001_NIRISS_x1dints.fits'
-    h = pf.open(n_cr)
+    h = fits.open(n_cr)
     n_ref = _bigdata+'/pipelines/jw00034001001_01101_00001_NIRISS_x1d_ref.fits'
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'],h['extract1d']])
-    newhref = pf.HDUList([href['primary'],href['extract1d']])
-    result = pf.diff.FITSDiff(newh, newhref,
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'],h['extract1d']])
+    newhref = fits.HDUList([href['primary'],href['extract1d']])
+    result = fits.diff.FITSDiff(newh, newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001)
     assert result.identical, result.report()

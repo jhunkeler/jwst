@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.emission.emission_step import EmissionStep
 
 from ..helpers import add_suffix
@@ -30,11 +30,11 @@ def test_emission_nircam(_bigdata):
     EmissionStep.call(_bigdata+'/nircam/test_emission/jw00017001001_01101_00001_NRCA1_persistence.fits',
                       output_file=output_file_base
                       )
-    h = pf.open(output_file)
-    href = pf.open(_bigdata+'/nircam/test_emission/jw00017001001_01101_00001_NRCA1_emission.fits')
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    h = fits.open(output_file)
+    href = fits.open(_bigdata+'/nircam/test_emission/jw00017001001_01101_00001_NRCA1_emission.fits')
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001

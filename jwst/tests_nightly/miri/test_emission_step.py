@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.emission.emission_step import EmissionStep
 
@@ -26,11 +26,11 @@ def test_emission_miri():
     EmissionStep.call(_bigdata+'/miri/test_emission/jw00001001001_01101_00001_MIRIMAGE_flat_field.fits',
                          output_file=output_file_base
     )
-    h = pf.open(output_file)
-    href = pf.open(_bigdata+'/miri/test_emission/jw00001001001_01101_00001_MIRIMAGE_emission.fits')
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    h = fits.open(output_file)
+    href = fits.open(_bigdata+'/miri/test_emission/jw00001001001_01101_00001_MIRIMAGE_emission.fits')
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001

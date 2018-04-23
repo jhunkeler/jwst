@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.pipeline.calwebb_coron3 import Coron3Pipeline
 
 pytestmark = [
@@ -25,14 +25,14 @@ def test_coron3_pipeline1(_bigdata):
     n_ref_name = 'jw99999-a3001_t1_nircam_f140m-maskbar_psfstack_ref.fits'
     n_ref = os.path.join(subdir, n_ref_name)
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'], href['sci'],
                          href['err'], href['dq']])
     kws_to_ignore = ['DATE', 'CAL_VER', 'CAL_VCS', 'CRDS_VER', 'CRDS_CTX']
 
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               rtol=0.00001)
@@ -42,13 +42,13 @@ def test_coron3_pipeline1(_bigdata):
     n_cur = 'jw9999947001_02102_00001_nrcb3_a3001_psfalign.fits'
     n_ref_name = 'jw99999-a3001_t1_nircam_f140m-maskbar_psfalign_ref.fits'
     n_ref = os.path.join(subdir, n_ref_name)
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'],
                          href['sci'], href['err'], href['dq']])
 
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               rtol=0.00001)
@@ -59,13 +59,13 @@ def test_coron3_pipeline1(_bigdata):
     n_ref_name = 'jw9999947001_02102_00001_nrcb3_psfsub_ref.fits'
     n_ref = os.path.join(subdir, n_ref_name)
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'], href['sci'],
                           href['err'], href['dq']])
 
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               rtol=0.00001)
@@ -76,28 +76,28 @@ def test_coron3_pipeline1(_bigdata):
     n_ref_name = 'jw9999947001_02102_00001_nrcb3_a3001_crfints_ref.fits'
     n_ref = os.path.join(subdir, n_ref_name)
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'], href['sci'],
                           href['err'], href['dq']])
 
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               rtol=0.00001)
     assert result.identical, result.report()
 
     n_cur = 'jw9999947001_02102_00002_nrcb3_a3001_crfints.fits'
-    h = pf.open(n_cur)
+    h = fits.open(n_cur)
     n_ref = os.path.join(subdir,
                         'jw9999947001_02102_00002_nrcb3_a3001_crfints_ref.fits')
 
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'], href['sci'],
                           href['err'], href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               rtol=0.00001)
@@ -108,14 +108,14 @@ def test_coron3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir,
                          'jw99999-a3001_t1_nircam_f140m-maskbar_i2d_ref.fits')
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
 
-    newh = pf.HDUList([h['primary'], h['sci'],
+    newh = fits.HDUList([h['primary'], h['sci'],
                        h['con'], h['wht'], h['hdrtab']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    newhref = fits.HDUList([href['primary'], href['sci'],
                           href['con'], href['wht'], href['hdrtab']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=kws_to_ignore,
                               ignore_fields=kws_to_ignore,

@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.pipeline.calwebb_detector1 import Detector1Pipeline
 
@@ -28,12 +28,12 @@ def test_detector1pipeline1():
 
     # Compare calibrated ramp product
     n_cr = 'jw00001001001_01101_00001_MIRIMAGE_ramp.fits'
-    h = pf.open( n_cr )
+    h = fits.open( n_cr )
     n_ref = _bigdata+'/miri/test_sloperpipeline/jw00001001001_01101_00001_MIRIMAGE_uncal_jump.fits'
-    href = pf.open( n_ref )
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['groupdq'],h['pixeldq']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['groupdq'],href['pixeldq']])
-    result = pf.diff.FITSDiff(newh,
+    href = fits.open( n_ref )
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['groupdq'],h['pixeldq']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['groupdq'],href['pixeldq']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
@@ -42,12 +42,12 @@ def test_detector1pipeline1():
 
     # Compare multi-integration countrate image product
     n_int = 'jw00001001001_01101_00001_MIRIMAGE_rateints.fits'
-    h = pf.open( n_int )
+    h = fits.open( n_int )
     n_ref = _bigdata+'/miri/test_sloperpipeline/jw00001001001_01101_00001_MIRIMAGE_uncal_integ.fits'
-    href = pf.open( n_ref )
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    href = fits.open( n_ref )
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001
@@ -56,12 +56,12 @@ def test_detector1pipeline1():
 
     # Compare countrate image product
     n_rate = 'jw00001001001_01101_00001_MIRIMAGE_rate.fits'
-    h = pf.open( n_rate )
+    h = fits.open( n_rate )
     n_ref = _bigdata+'/miri/test_sloperpipeline/jw00001001001_01101_00001_MIRIMAGE_uncal_MiriSloperPipeline.fits'
-    href = pf.open( n_ref )
-    newh = pf.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    href = fits.open( n_ref )
+    newh = fits.HDUList([h['primary'],h['sci'],h['err'],h['dq']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001

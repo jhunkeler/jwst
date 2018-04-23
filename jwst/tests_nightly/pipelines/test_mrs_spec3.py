@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.pipeline.calwebb_spec3 import Spec3Pipeline
 
 pytestmark = [
@@ -36,12 +36,12 @@ def test_spec3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir, 'det_image_ch1-short_s3d_ref.fits')
 
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq'], h['wmap']])
-    newhref = pf.HDUList([href['primary'], href['sci'], href['err'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq'], h['wmap']])
+    newhref = fits.HDUList([href['primary'], href['sci'], href['err'],
                           href['dq'], href['wmap']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               ignore_fields=ignore_kws,
@@ -53,12 +53,12 @@ def test_spec3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir, 'det_image_ch2-short_s3d_ref.fits')
 
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq'], h['wmap']])
-    newhref = pf.HDUList([href['primary'], href['sci'], href['err'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq'], h['wmap']])
+    newhref = fits.HDUList([href['primary'], href['sci'], href['err'],
                           href['dq'], href['wmap']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               ignore_fields=ignore_kws,
@@ -70,11 +70,11 @@ def test_spec3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir, 'det_image_ch1-short_x1d_ref.fits')
 
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['extract1d']])
-    newhref = pf.HDUList([href['primary'], href['extract1d']])
-    result = pf.diff.FITSDiff(newh,
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['extract1d']])
+    newhref = fits.HDUList([href['primary'], href['extract1d']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               ignore_fields=ignore_kws,
@@ -86,11 +86,11 @@ def test_spec3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir, 'det_image_ch2-short_x1d_ref.fits')
 
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['extract1d']])
-    newhref = pf.HDUList([href['primary'], href['extract1d']])
-    result = pf.diff.FITSDiff(newh,
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['extract1d']])
+    newhref = fits.HDUList([href['primary'], href['extract1d']])
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               ignore_fields=ignore_kws,
