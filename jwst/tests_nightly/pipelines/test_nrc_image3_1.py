@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.pipeline.calwebb_image3 import Image3Pipeline
 
 pytestmark = [
@@ -73,12 +73,12 @@ def test_image3_pipeline1(_bigdata):
     ref_filename = 'nrca5_47Tuc_subpix_dither1_newpos_cal-a3001_ref.fits'
     n_ref = os.path.join(subdir, ref_filename)
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['err'], h['dq']])
+    newhref = fits.HDUList([href['primary'], href['sci'],
                           href['err'], href['dq']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               rtol=0.00001)
@@ -89,13 +89,13 @@ def test_image3_pipeline1(_bigdata):
     n_ref = os.path.join(subdir, 'mosaic_long_i2d_ref.fits')
 
 
-    h = pf.open(n_cur)
-    href = pf.open(n_ref)
-    newh = pf.HDUList([h['primary'], h['sci'], h['con'],
+    h = fits.open(n_cur)
+    href = fits.open(n_ref)
+    newh = fits.HDUList([h['primary'], h['sci'], h['con'],
                        h['wht'], h['hdrtab']])
-    newhref = pf.HDUList([href['primary'], href['sci'],
+    newhref = fits.HDUList([href['primary'], href['sci'],
                          href['con'], href['wht'], href['hdrtab']])
-    result = pf.diff.FITSDiff(newh,
+    result = fits.diff.FITSDiff(newh,
                               newhref,
                               ignore_keywords=ignore_kws,
                               ignore_fields=ignore_kws,

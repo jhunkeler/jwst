@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.pipeline.calwebb_spec2 import Spec2Pipeline
 
 pytestmark = [
@@ -27,9 +27,9 @@ def test_nrs_msa_spec2b(_bigdata):
 
     na = 'jw95065_nrs_msaspec_barshadow_cal.fits'
     nb = _bigdata+'/pipelines/jw95065_nrs_msaspec_barshadow_cal_ref.fits'
-    h = pf.open(na)
-    href = pf.open(nb)
-    newh = pf.HDUList([h['primary'],h['sci',1],h['err',1],h['dq',1],h['relsens',1],
+    h = fits.open(na)
+    href = fits.open(nb)
+    newh = fits.HDUList([h['primary'],h['sci',1],h['err',1],h['dq',1],h['relsens',1],
                                     h['pathloss_pointsource',1],h['wavelength_pointsource',1],
                                     h['pathloss_uniformsource',1],h['wavelength_uniformsource',1],
                                     h['barshadow', 1],
@@ -70,7 +70,7 @@ def test_nrs_msa_spec2b(_bigdata):
                                     h['pathloss_uniformsource',10],h['wavelength_uniformsource',10],
                                     h['barshadow', 10]])
 
-    newhref = pf.HDUList([href['primary'],href['sci',1],href['err',1],href['dq',1],href['relsens',1],
+    newhref = fits.HDUList([href['primary'],href['sci',1],href['err',1],href['dq',1],href['relsens',1],
                                           href['pathloss_pointsource',1],href['wavelength_pointsource',1],
                                           href['pathloss_uniformsource',1],href['wavelength_uniformsource',1],
                                           href['barshadow', 1],
@@ -110,37 +110,37 @@ def test_nrs_msa_spec2b(_bigdata):
                                           href['pathloss_pointsource',10],href['wavelength_pointsource',10],
                                           href['pathloss_uniformsource',10],href['wavelength_uniformsource',10],
                                           href['barshadow', 10]])
-    result = pf.diff.FITSDiff(newh, newhref,
+    result = fits.diff.FITSDiff(newh, newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001)
     assert result.identical, result.report()
 
     #na = 'f170lp-g235m_mos_observation-6-c0e0_001_dn_nrs1_mod_s2d.fits'
     #nb = _bigdata+'/pipelines/F170LP-G235M_MOS_observation-6-c0e0_001_DN_NRS1_s2d_ref.fits'
-    #h = pf.open(na)
-    #href = pf.open(nb)
-    #newh = pf.HDUList([h['primary'],h['sci',1],h['wht',1],h['con',1],h['relsens',1],
+    #h = fits.open(na)
+    #href = fits.open(nb)
+    #newh = fits.HDUList([h['primary'],h['sci',1],h['wht',1],h['con',1],h['relsens',1],
     #                                h['sci',2],h['wht',2],h['con',2],h['relsens',2],
     #                                h['sci',3],h['wht',3],h['con',3],h['relsens',3],
     #                                h['sci',4],h['wht',4],h['con',4],h['relsens',4],
     #                                h['sci',5],h['wht',5],h['con',5],h['relsens',5]])
-    #newhref = pf.HDUList([href['primary'],href['sci',1],href['wht',1],href['con',1],href['relsens',1],
+    #newhref = fits.HDUList([href['primary'],href['sci',1],href['wht',1],href['con',1],href['relsens',1],
     #                                      href['sci',2],href['wht',2],href['con',2],href['relsens',2],
     #                                      href['sci',3],href['wht',3],href['con',3],href['relsens',3],
     #                                      href['sci',4],href['wht',4],href['con',4],href['relsens',4],
     #                                      href['sci',5],href['wht',5],href['con',5],href['relsens',5]])
-    #result = pf.diff.FITSDiff(newh, newhref,
+    #result = fits.diff.FITSDiff(newh, newhref,
     #                          ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
     #                          rtol = 0.00001)
     assert result.identical, result.report()
 
     na = 'jw95065_nrs_msaspec_barshadow_x1d.fits'
     nb = _bigdata+'/pipelines/jw95065_nrs_msaspec_barshadow_x1d_ref.fits'
-    h = pf.open(na)
-    href = pf.open(nb)
-    newh = pf.HDUList([h['primary'],h['extract1d',1],h['extract1d',2],h['extract1d',3],h['extract1d',4],h['extract1d',5],h['extract1d',6],h['extract1d',7],h['extract1d',8],h['extract1d',9],h['extract1d',10]])
-    newhref = pf.HDUList([href['primary'],href['extract1d',1],href['extract1d',2],href['extract1d',3],href['extract1d',4],href['extract1d',5],href['extract1d',6],href['extract1d',7],href['extract1d',8],href['extract1d',9],href['extract1d',10]])
-    result = pf.diff.FITSDiff(newh, newhref,
+    h = fits.open(na)
+    href = fits.open(nb)
+    newh = fits.HDUList([h['primary'],h['extract1d',1],h['extract1d',2],h['extract1d',3],h['extract1d',4],h['extract1d',5],h['extract1d',6],h['extract1d',7],h['extract1d',8],h['extract1d',9],h['extract1d',10]])
+    newhref = fits.HDUList([href['primary'],href['extract1d',1],href['extract1d',2],href['extract1d',3],href['extract1d',4],href['extract1d',5],href['extract1d',6],href['extract1d',7],href['extract1d',8],href['extract1d',9],href['extract1d',10]])
+    result = fits.diff.FITSDiff(newh, newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.00001)
     assert result.identical, result.report()

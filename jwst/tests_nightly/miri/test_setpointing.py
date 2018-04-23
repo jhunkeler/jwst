@@ -3,7 +3,7 @@ import pytest
 
 from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from shutil import copyfile
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.lib.set_telescope_pointing import add_wcs
 
 
@@ -24,11 +24,11 @@ def test_miri_setpointing():
 
     add_wcs(_bigdata+'/miri/test_pointing/jw80600010001_02101_00001_mirimage_uncal.fits')
 
-    h = pf.open(_bigdata+'/miri/test_pointing/jw80600010001_02101_00001_mirimage_uncal.fits')
-    href = pf.open(_bigdata+'/miri/test_pointing/jw80600010001_02101_00001_mirimage_uncal_ref.fits')
-    newh = pf.HDUList([h['primary'],h['sci'],h['refout'],h['group']])
-    newhref = pf.HDUList([href['primary'],href['sci'],href['refout'],href['group']])
-    result = pf.diff.FITSDiff(newh, newhref,
+    h = fits.open(_bigdata+'/miri/test_pointing/jw80600010001_02101_00001_mirimage_uncal.fits')
+    href = fits.open(_bigdata+'/miri/test_pointing/jw80600010001_02101_00001_mirimage_uncal_ref.fits')
+    newh = fits.HDUList([h['primary'],h['sci'],h['refout'],h['group']])
+    newhref = fits.HDUList([href['primary'],href['sci'],href['refout'],href['group']])
+    result = fits.diff.FITSDiff(newh, newhref,
                               ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                               rtol = 0.000001)
     assert result.identical, result.report()

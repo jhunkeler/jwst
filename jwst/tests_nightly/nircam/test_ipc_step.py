@@ -1,6 +1,6 @@
 import os
 import pytest
-from astropy.io import fits as pf
+from astropy.io import fits
 from jwst.ipc.ipc_step import IPCStep
 
 from ..helpers import add_suffix
@@ -24,11 +24,11 @@ def test_ipc_nircam(_bigdata):
 
     IPCStep.call(_bigdata + '/nircam/test_ipc_step/jw00017001001_01101_00001_NRCA3_uncal.fits',
                  output_file=output_file_base)
-    h = pf.open(output_file)
-    href = pf.open(_bigdata + '/nircam/test_ipc_step/jw00017001001_01101_00001_NRCA3_ipc.fits')
-    newh = pf.HDUList([h['primary'], h['sci']])
-    newhref = pf.HDUList([href['primary'], href['sci']])
-    result = pf.diff.FITSDiff(newh,
+    h = fits.open(output_file)
+    href = fits.open(_bigdata + '/nircam/test_ipc_step/jw00017001001_01101_00001_NRCA3_ipc.fits')
+    newh = fits.HDUList([h['primary'], h['sci']])
+    newhref = fits.HDUList([href['primary'], href['sci']])
+    result = fits.diff.FITSDiff(newh,
                                 newhref,
                                 ignore_keywords=['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
                                 rtol=1.e-6)
