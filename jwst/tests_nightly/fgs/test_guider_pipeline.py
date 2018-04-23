@@ -2,9 +2,7 @@ import os
 import pytest
 
 from astropy.io import fits
-from jwst.helpers.io import get_bigdata
-from jwst.helpers.mark import require_bigdata
-from jwst.helpers.utils import cmp_fitshdr
+from jwst.helpers import get_bigdata, require_bigdata, cmp_fitshdr
 from jwst.pipeline.calwebb_guider import GuiderPipeline
 
 
