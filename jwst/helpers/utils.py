@@ -33,6 +33,8 @@ def cmp_fitshdr(left, right, **kwargs):
         in header values, image arrays, or table columns.
         (See `defaults_compare` for initial values)
 
+    no_assert: boolean
+        Return result object instead of asserting
 
     kwargs: dict
         Additional arguments to be passed to `FITSDiff`
@@ -61,6 +63,9 @@ def cmp_fitshdr(left, right, **kwargs):
                                         ignore_keywords=ignore_keywords,
                                         rtol=rtol,
                                         **kwargs)
+
+    if no_assert:
+        return result
 
     assert result.identical, result.report()
 
