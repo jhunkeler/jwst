@@ -18,7 +18,8 @@ def test_miri_image_wcs():
     Regression test of creating a WCS object and doing pixel to sky transformation.
 
     """
-    output_file_base, output_file = add_suffix('miri_image_wcs_output.fits', 'assignwcsstep')
+    suffix = 'assignwcsstep'
+    output_file_base, output_file = add_suffix('miri_image_wcs_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -29,7 +30,7 @@ def test_miri_image_wcs():
     ref_file = get_bigdata('miri', 'test_wcs', 'image', 'jw00001001001_01101_00001_MIRIMAGE_assign_wcs.fits')
 
     AssignWcsStep.call(input_file,
-                       output_file=output_file_base
+                       output_file=output_file_base, suffix=suffix
                        )
     im = ImageModel(output_file)
     imref = ImageModel(ref_file)

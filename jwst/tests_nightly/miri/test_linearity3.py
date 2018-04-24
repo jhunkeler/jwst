@@ -25,7 +25,7 @@ def test_linearity_miri3():
 
     LinearityStep.call(_bigdata+'/miri/test_linearity/jw00001001001_01109_00001_MIRIMAGE_dark_current.fits',
                        override_linearity=_bigdata+'/miri/test_linearity/lin_nan_flag_miri.fits',
-                       output_file=output_file_base
+                       output_file=output_file_base, name='linearity'
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_linearity/jw00001001001_01109_00001_MIRIMAGE_linearity.fits')
@@ -34,7 +34,7 @@ def test_linearity_miri3():
     newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['pixeldq'],href['groupdq']])
     result = fits.diff.FITSDiff(newh,
                               newhref,
-                              ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
+                              ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX', 'R_LINEAR'],
                               rtol = 0.00001
     )
     assert result.identical, result.report()

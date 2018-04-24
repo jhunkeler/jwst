@@ -24,7 +24,7 @@ def test_saturation_miri2():
 
 
     SaturationStep.call(_bigdata+'/miri/test_saturation/jw80600012001_02101_00003_mirimage_dqinit.fits',
-                        output_file=output_file_base
+                        output_file=output_file_base, name='saturation'
                         )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_saturation/jw80600012001_02101_00003_mirimage_saturation.fits')

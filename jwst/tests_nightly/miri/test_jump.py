@@ -25,7 +25,7 @@ def test_jump_miri():
 
     JumpStep.call(_bigdata+'/miri/test_jump/jw00001001001_01101_00001_MIRIMAGE_linearity.fits',
                   rejection_threshold=200.0,
-                  output_file=output_file_base
+                  output_file=output_file_base, name='jump'
                   )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_jump/jw00001001001_01101_00001_MIRIMAGE_jump.fits')

@@ -22,7 +22,7 @@ def test_fringe_miri():
         pass
 
     FringeStep.call(_bigdata+'/miri/test_fringe/fringe1_input.fits',
-                    output_file=output_file_base
+                    output_file=output_file_base, name='fringe'
                     )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_fringe/baseline_fringe1.fits')

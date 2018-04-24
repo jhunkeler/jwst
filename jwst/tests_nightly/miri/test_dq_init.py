@@ -22,7 +22,7 @@ def test_dq_init_miri():
         pass
 
     DQInitStep.call(_bigdata+'/miri/test_dq_init/jw00001001001_01101_00001_MIRIMAGE_uncal.fits',
-                    output_file=output_file_base
+                    output_file=output_file_base, name='dq_init'
     )
 
     h = fits.open(output_file)

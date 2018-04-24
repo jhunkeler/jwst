@@ -22,7 +22,7 @@ def test_straylight1_miri():
         pass
 
     StraylightStep.call(_bigdata+'/miri/test_straylight/jw80500018001_02101_00002_MIRIFUSHORT_flatfield.fits',
-                        output_file=output_file_base
+                        output_file=output_file_base, name='straylight'
                         )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_straylight/jw80500018001_02101_00002_MIRIFUSHORT_straylight.fits')
