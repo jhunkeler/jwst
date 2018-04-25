@@ -15,15 +15,15 @@ def test_nirspec_dark_pipeline(_bigdata):
     Regression test of calwebb_dark pipeline performed on NIRSpec raw data.
 
     """
-    step = DarkPipeline()
+    step = DarkPipeline(name='DarkPipeline')
     step.suffix = "dark"
+    step.output_file='jw84500013001_02103_00003_NRS1_dark.fits'
     step.refpix.odd_even_columns = True
     step.refpix.use_side_ref_pixels = True
     step.refpix.side_smoothing_length=11
     step.refpix.side_gain=1.0
 
-    step.run(_bigdata+'/pipelines/jw84500013001_02103_00003_NRS1_uncal.fits',
-             output_file='jw84500013001_02103_00003_NRS1_dark.fits')
+    step.run(_bigdata+'/pipelines/jw84500013001_02103_00003_NRS1_uncal.fits')
 
     h = fits.open('jw84500013001_02103_00003_NRS1_dark.fits')
     href = fits.open(_bigdata+'/pipelines/jw84500013001_02103_00003_NRS1_dark_ref.fits')
