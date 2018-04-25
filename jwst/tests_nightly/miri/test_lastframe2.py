@@ -14,7 +14,8 @@ def test_lastframe_miri2():
     Regression test of lastframe step performed on MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('lastframe2_output.fits', 'lastframe')
+    suffix = 'lastframe'
+    output_file_base, output_file = add_suffix('lastframe2_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -23,7 +24,7 @@ def test_lastframe_miri2():
 
 
     LastFrameStep.call(_bigdata+'/miri/test_lastframe/jw80600012001_02101_00003_mirimage_rscd.fits',
-                       output_file=output_file_base, name='lastframe'
+                       output_file=output_file_base, suffix=suffix
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_lastframe/jw80600012001_02101_00003_mirimage_lastframe.fits')

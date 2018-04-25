@@ -14,7 +14,8 @@ def test_jump_miri2():
     Regression test of jump step performed on MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('jump2_output.fits', 'jump')
+    suffix = 'jump'
+    output_file_base, output_file = add_suffix('jump2_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -25,7 +26,7 @@ def test_jump_miri2():
 
     JumpStep.call(_bigdata+'/miri/test_jump/jw80600012001_02101_00003_mirimage_dark.fits',
                   rejection_threshold=25.0,
-                  output_file=output_file_base, name='jump'
+                  output_file=output_file_base, suffix=suffix
                   )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_jump/jw80600012001_02101_00003_mirimage_jump.fits')

@@ -14,7 +14,8 @@ def test_emission_miri():
     Regression test of emission step performed on calibrated miri data.
 
     """
-    output_file_base, output_file = add_suffix('emission1_output.fits', 'emission')
+    suffix = 'emission'
+    output_file_base, output_file = add_suffix('emission1_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -24,7 +25,7 @@ def test_emission_miri():
 
 
     EmissionStep.call(_bigdata+'/miri/test_emission/jw00001001001_01101_00001_MIRIMAGE_flat_field.fits',
-                         output_file=output_file_base, name='emission'
+                         output_file=output_file_base, suffix=suffix
     )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_emission/jw00001001001_01101_00001_MIRIMAGE_emission.fits')

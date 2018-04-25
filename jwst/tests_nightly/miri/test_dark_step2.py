@@ -14,7 +14,8 @@ def test_dark_current_miri2():
     Regression test of dark current step performed on MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('darkcurrent2_output.fits', 'dark_current')
+    suffix = 'dark_current'
+    output_file_base, output_file = add_suffix('darkcurrent2_output.fits', suffix)
 
     try:
         os.remove('output_file')
@@ -22,7 +23,7 @@ def test_dark_current_miri2():
         pass
 
     DarkCurrentStep.call(_bigdata+'/miri/test_dark_step/jw80600012001_02101_00003_mirimage_lastframe.fits',
-                         output_file=output_file_base, name='dark_current'
+                         output_file=output_file_base, suffix=suffix
                          )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_dark_step/jw80600012001_02101_00003_mirimage_dark.fits')

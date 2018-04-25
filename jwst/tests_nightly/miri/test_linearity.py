@@ -14,7 +14,8 @@ def test_linearity_miri():
     Regression test of linearity step performed on MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('linearity1_output.fits', 'linearity')
+    suffix = 'linearity'
+    output_file_base, output_file = add_suffix('linearity1_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -24,7 +25,7 @@ def test_linearity_miri():
 
 
     LinearityStep.call(_bigdata+'/miri/test_linearity/jw00001001001_01101_00001_MIRIMAGE_dark_current.fits',
-                       output_file=output_file_base, name='linearity'
+                       output_file=output_file_base, suffix=suffix
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_linearity/jw00001001001_01101_00001_MIRIMAGE_linearity.fits')

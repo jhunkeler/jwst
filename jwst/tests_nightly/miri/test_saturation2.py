@@ -14,7 +14,8 @@ def test_saturation_miri2():
     Regression test of saturation step performed on uncalibrated MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('saturation2_output.fits', 'saturation')
+    suffix = 'saturation'
+    output_file_base, output_file = add_suffix('saturation2_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -24,7 +25,7 @@ def test_saturation_miri2():
 
 
     SaturationStep.call(_bigdata+'/miri/test_saturation/jw80600012001_02101_00003_mirimage_dqinit.fits',
-                        output_file=output_file_base, name='saturation'
+                        output_file=output_file_base, suffix=suffix
                         )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_saturation/jw80600012001_02101_00003_mirimage_saturation.fits')

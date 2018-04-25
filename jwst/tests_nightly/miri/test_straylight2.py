@@ -14,7 +14,8 @@ def test_straylight2_miri():
     Regression test of straylight performed on MIRI IFULONG data.
 
     """
-    output_file_base, output_file = add_suffix('straylight2_output.fits', 'straylight')
+    suffix = 'straylight'
+    output_file_base, output_file = add_suffix('straylight2_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -22,7 +23,7 @@ def test_straylight2_miri():
         pass
 
     StraylightStep.call(_bigdata+'/miri/test_straylight/jw80500018001_02101_00002_MIRIFULONG_flatfield.fits',
-                        output_file=output_file_base, name='straylight'
+                        output_file=output_file_base, suffix=suffix
                         )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_straylight/jw80500018001_02101_00002_MIRIFULONG_straylight.fits')

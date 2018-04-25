@@ -14,7 +14,8 @@ def test_extract1d_miri():
     Regression test of extract_1d step performed on MIRI LRS fixed-slit data.
 
     """
-    output_file_base, output_file = add_suffix('extract1d1_output.fits', 'extract_1d')
+    suffix = 'extract_1d'
+    output_file_base, output_file = add_suffix('extract1d1_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -25,7 +26,7 @@ def test_extract1d_miri():
 
     Extract1dStep.call(_bigdata+'/miri/test_extract1d/jw00035001001_01101_00001_mirimage_photom.fits',
                        smoothing_length=0,
-                       output_file=output_file_base, name='extract_1d'
+                       output_file=output_file_base, suffix=suffix
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/miri/test_extract1d/jw00035001001_01101_00001_mirimage_x1d.fits')
