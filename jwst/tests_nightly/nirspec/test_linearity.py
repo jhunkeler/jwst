@@ -28,7 +28,7 @@ def test_linearity_nirspec(_bigdata):
 
 
     LinearityStep.call(_bigdata+'/nirspec/test_linearity/jw00023001001_01101_00001_NRS1_dark_current.fits',
-                       output_file=output_file_base
+                       output_file=output_file_base, name='linearity'
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/nirspec/test_linearity/jw00023001001_01101_00001_NRS1_linearity.fits')
