@@ -14,8 +14,8 @@ pytestmark = [
 
 def test_ipc_nircam(_bigdata):
     """Regression test of IPC step performed on NIRCam data."""
-
-    output_file_base, output_file = add_suffix('ipc1_output.fits', 'ipc')
+    suffix = 'ipc'
+    output_file_base, output_file = add_suffix('ipc1_output.fits', suffix)
 
     try:
         os.remove(output_file)

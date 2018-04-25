@@ -18,7 +18,8 @@ def test_flat_field_nircam(_bigdata):
     Regression test of flat_field step performed on MIRI data.
 
     """
-    output_file_base, output_file = add_suffix('flatfield1_output.fits', 'flat_field')
+    suffix = 'flat_field'
+    output_file_base, output_file = add_suffix('flatfield1_output.fits', suffix)
 
     try:
         os.remove(output_file)
@@ -27,8 +28,8 @@ def test_flat_field_nircam(_bigdata):
 
 
 
-    FlatFieldStep.call(_bigdata+'/miri/test_flat_field/jw00001001001_01101_00001_MIRIMAGE_assign_wcs.fits',
-                       output_file=output_file_base, name='flat_field'
+    FlatFieldStep.call(_bigdata+'/nircam/test_flat_field/jw00017001001_01101_00001_NRCA1_ramp_fit.fits',
+                       output_file=output_file_base, suffix=suffix
                        )
     h = fits.open(output_file)
     href = fits.open(_bigdata+'/nircam/test_flat_field/jw00017001001_01101_00001_NRCA1_flat_field.fits')
