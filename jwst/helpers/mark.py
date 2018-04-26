@@ -3,9 +3,13 @@ import os
 import pytest
 import re
 
-__all__ = ['runslow', 'require_bigdata',
-           'not_under_travis', 'require_crds_context']
+__all__ = ['runslow', 'require_bigdata', 'remote_data',
+           'internet_off', 'not_under_travis', 'require_crds_context']
 
+
+# Wrap/provide markers from pytest-remotedata plugin
+remote_data = pytest.mark.remote_data
+internet_off = pytest.mark.internet_off
 
 # Decorator to indicate slow tests
 runslow = slow = pytest.mark.skipif(
@@ -19,7 +23,6 @@ require_bigdata = pytest.mark.skipif(
     not pytest.config.getoption('bigdata'),
     reason='need --bigdata option to run'
 )
-
 
 # Decorator to skip test if running under a TravisCI
 not_under_travis = pytest.mark.skipif(
