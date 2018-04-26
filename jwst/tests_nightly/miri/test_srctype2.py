@@ -14,7 +14,7 @@ def test_srctype2():
     Regression test of srctype step performed on MIRI LRS slitless data.
 
     """
-    suffix = 'sourcetypestep'
+    suffix = 'srctyp'
     output_file_base, output_file = add_suffix('srctype2_output.fits', suffix)
 
     try:
@@ -33,7 +33,7 @@ def test_srctype2():
     newhref = fits.HDUList([href['primary'],href['sci'],href['err'],href['dq']])
     result = fits.diff.FITSDiff(newh,
                               newhref,
-                              ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX'],
+                              ignore_keywords = ['DATE','CAL_VER','CAL_VCS','CRDS_VER','CRDS_CTX', 'FILENAME'],
                               rtol = 0.00001
     )
     assert result.identical, result.report()
