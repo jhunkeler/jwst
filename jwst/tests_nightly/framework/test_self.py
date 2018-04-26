@@ -1,9 +1,10 @@
 import os
 import pytest
+import requests
 
 from jwst.helpers.io import (get_bigdata, _select_bigdata, BigdataError)
-from jwst.helpers.mark import require_bigdata
-from jwst.helpers.utils import download
+from jwst.helpers.mark import require_bigdata, remote_data
+import jwst.helpers.utils as utils
 
 
 @require_bigdata
@@ -28,6 +29,19 @@ class TestBigdata:
         with pytest.raises(BigdataError):
             get_bigdata('THI5', 'PR0B4BLY', 'D03S', 'N0T', '3X15T')
 
+
+class TestGenericUtils:
+    @remote_data
+    def test_download(self):
+        output = os.path.join(os.path.abspath(os.curdir), 'index.html')
+        filename = utils.download('http://www.stsci.edu/index.html', output)
+        assert os.path.exists(filename)
+        assert os.stat(filename).st_size
+
+    def test_download_failure(self):
+        output = os.path.join(os.path.abspath(os.curdir), 'index.html')
+        with pytest.raises(requests.exceptions.ConnectionError):
+            utils.download('http://localhostunlikely/null/index.html', output)
 
 
 class TestJailFixture:
