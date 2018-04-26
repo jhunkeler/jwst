@@ -47,10 +47,16 @@ def cmp_fitshdr(left, right, **kwargs):
     assert isinstance(left, str)
     assert isinstance(right, str)
 
-    keys = kwargs.get('keys', default_compare['keys'])
-    rtol = kwargs.get('rtol', default_compare['rtol'])
-    ignore_keywords = kwargs.get('ignore_keywords',
-                                 default_compare['ignore_keywords'])
+    local_kwargs = dict(
+        keys=kwargs.get('keys', default_compare['keys']),
+        rtol=kwargs.get('rtol', default_compare['rtol']),
+        ignore_keywords = kwargs.get('ignore_keywords',
+                                     default_compare['ignore_keywords'])
+    )
+
+    keys = local_kwargs['keys']
+    rtol = local_kwargs['rtol']
+    ignore_keywords = local_kwargs['ignore_keywords']
 
     assert isinstance(keys, list)
     assert isinstance(rtol, float)
