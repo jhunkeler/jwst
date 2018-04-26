@@ -28,7 +28,7 @@ def test_photom_niriss(_bigdata):
 
 
 
-    PhotomStep.call(_bigdata+'/miri/test_photom/jw00001001001_01101_00001_MIRIMAGE_emission.fits',
+    PhotomStep.call(_bigdata+'/niriss/test_photom/jw00034001001_01101_00001_NIRISS_flat_field.fits',
                     output_file=output_file_base, suffix=suffix
                     )
     h = fits.open(output_file)
