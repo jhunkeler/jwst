@@ -9,10 +9,11 @@ __all__ = ['cmp_fitshdr', 'cmp_gen_hdrkeywords',
 
 RE_URL = re.compile('\w+://\S+')
 
-default_compare = dict(
+default_cmp_fitshdr = dict(
     ignore_keywords=['DATE', 'CAL_VER', 'CAL_VCS', 'CRDS_VER', 'CRDS_CTX'],
     keys=['primary', 'sci', 'dq'],
     rtol=0.000001,
+    no_assert=False
 )
 
 
@@ -47,36 +48,34 @@ def cmp_fitshdr(left, right, **kwargs):
     assert isinstance(left, str)
     assert isinstance(right, str)
 
-    local_kwargs = dict(
-        keys=kwargs.get('keys', default_compare['keys']),
-        rtol=kwargs.get('rtol', default_compare['rtol']),
-        ignore_keywords = kwargs.get('ignore_keywords',
-                                     default_compare['ignore_keywords'])
-    )
+    local_keys = ['keys', 'rtol', 'ignore_keywords', 'no_assert']
+    local_args = dict()
 
-    keys = local_kwargs['keys']
-    rtol = local_kwargs['rtol']
-    ignore_keywords = local_kwargs['ignore_keywords']
+    for k in local_keys:
+        local_args[k] = kwargs.get(k, default_cmp_fitshdr[k])
+        if k in kwargs:
+            del kwargs[k]
 
-    assert isinstance(keys, list)
-    assert isinstance(rtol, float)
-    assert isinstance(ignore_keywords, list)
+    assert isinstance(local_args['keys'], list)
+    assert isinstance(local_args['rtol'], float)
+    assert isinstance(local_args['ignore_keywords'], list)
+    assert isinstance(local_args['no_assert'], bool)
 
     with fits.open(left) as a:
         with fits.open(right) as b:
-            result = fits.diff.FITSDiff(fits.HDUList([a[kw] for kw in keys]),
-                                        fits.HDUList([b[kw] for kw in keys]),
-                                        ignore_keywords=ignore_keywords,
-                                        rtol=rtol,
+            result = fits.diff.FITSDiff(fits.HDUList([a[kw] for kw in local_args['keys']]),
+                                        fits.HDUList([b[kw] for kw in local_args['keys']]),
+                                        ignore_keywords=local_args['ignore_keywords'],
+                                        rtol=local_args['rtol'],
                                         **kwargs)
 
-    if no_assert:
+    if local_args['no_assert']:
         return result
 
     assert result.identical, result.report()
 
 
-def cmp_gen_hdrkeywords(fitsobj, base, keywords, limit=0, start=0):
+def cmp_gen_hdrkeywords(keys_dynamic, keys_static=['primary'], limit=0, start=0):
     """Generate list of FITS header elements to compare
 
     TODO: Use correct terminology
@@ -86,11 +85,11 @@ def cmp_gen_hdrkeywords(fitsobj, base, keywords, limit=0, start=0):
     fitsobj: HDUList
         TODO
 
-    base: str
-        Primary keyword
+    keys_dynamic: list
+        Keywords to be iterated over
 
-    keywords: list
-        Additional keywords to use
+    keys_static: list
+        Keywords that must exist and will not be changed
 
     limit: int
         Number of extensions
@@ -105,23 +104,23 @@ def cmp_gen_hdrkeywords(fitsobj, base, keywords, limit=0, start=0):
         Keywords to compare
 
     """
-    assert isinstance(fitsobj, fits.HDUList)
-    assert isinstance(base, str)
-    assert isinstance(keywords, list)
+    #assert isinstance(fitsobj, fits.HDUList)
+    assert isinstance(keys_static, list)
+    assert isinstance(keys_dynamic, list)
 
-    output = list(fitsobj[base])
+    result = keys_static
 
     if limit and not start:
         start += 1
 
     for idx in range(start, limit + 1):
-        for key in keywords:
+        for key in keys_dynamic:
             if not limit:
-                output.append(fitsobj[key])
+                result += key
             else:
-                output.append(fitsobj[key, idx])
+                result += key, idx
 
-    return output
+    return result
 
 
 # Check strings based on words using length precision
