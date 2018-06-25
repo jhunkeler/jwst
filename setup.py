@@ -85,13 +85,13 @@ PACKAGE_DATA = {
 }
 INSTALL_REQUIRES=[
     'asdf',
-    'astropy',
+    'astropy>=3.0',
     'crds',
     'drizzle',
     'gwcs',
     'jsonschema',
     'namedlist',
-    'numpy',
+    'numpy>=1.11',
     'scipy',
     'spherical-geometry',
     'six',
@@ -114,6 +114,7 @@ TESTS_REQUIRE=[
 EXTERN_BIN_REQUIRES = {
         'freetds': 'tsql',
         'unixodbc': 'odbcinst',
+        'mysql': 'mysql',
 }
 
 def get_transforms_data():
@@ -210,29 +211,31 @@ def find_library(name):
 def summary():
     from verhawk.scanner import Scanner
 
-    fmt = '    {:.<30s}{:<10} (version: {})\n'
+    stop_char = ' !<>='
+    fmt = '    {:.<30s}{:<10} @{}\n'
     vh = None
     output = '\n\n========= Build Summary =========\n\n'
 
     # Python packages
     output += '[REQUIRED] Dependencies:\n\n'
-    for package in sorted(INSTALL_REQUIRES):
+    for name in sorted(INSTALL_REQUIRES):
         status = 'Missing'
-        package = package.replace('-', '_')
-        spec = importlib.util.find_spec(package)
+        name = name.replace('-', '_')
 
-        if spec:
-            module = importlib.util.module_from_spec(spec)
-            try:
-                spec.loader.exec_module(module)
-                sys.modules[package] = module
-            except (AttributeError, TypeError):
-                pass
+        # Sanitize package name omitting version constraints
+        for ch in stop_char:
+            pos = name.find(ch)
+            if pos >= 0:
+                name = name[0:pos]
 
-            vh = Scanner(module).versions
+
+        module = importlib.import_module(name)
+        vh = Scanner(module).versions
+
+        if vh:
             status = 'Installed'
 
-        output += fmt.format(package, status, vh[package] or 'Unknown')
+        output += fmt.format(name, status, vh[name] or 'Unknown')
 
     output += '\n[OPTIONAL] Dependencies:\n\n'
 
@@ -243,6 +246,7 @@ def summary():
         output += fmt.format(key, status)
 
     print(output)
+
 
 if not pkgutil.find_loader('relic'):
     relic_local = os.path.exists('relic')
