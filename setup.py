@@ -4,12 +4,14 @@ import os
 import pkgutil
 import platform
 import sys
+import verhawk
+from ctypes.util import find_library
 from distutils.spawn import find_executable
 from glob import glob
 from os.path import basename
 from setuptools import setup, find_packages, Extension, Command
 from setuptools.command.test import test as TestCommand
-from subprocess import check_call, CalledProcessError
+from subprocess import check_call, check_output, CalledProcessError
 
 try:
     from numpy import get_include as np_include
@@ -101,7 +103,7 @@ INSTALL_REQUIRES=[
     'stsci.convolve',
     'stsci.stimage',
     'photutils',
-    'verhawk',
+    'verhawk'
 ]
 EXTRAS_REQUIRE={
     'ephem': ['pymssql', 'jplephem'],
@@ -112,10 +114,16 @@ TESTS_REQUIRE=[
     'requests_mock',
 ]
 EXTERN_BIN_REQUIRES = {
-        'freetds': 'tsql',
-        'unixodbc': 'odbcinst',
-        'mysql': 'mysql',
+    'freetds': 'tsql',
+    'unixODBC': 'odbcinst',
+    'mysql': 'mysql',
+    'bash': 'bash',
+    'tcsh': 'tcsh',
+    'zsh': 'zsh',
+    'pytest': 'pytest'
 }
+EXTERN_LIB_REQUIRES = {}
+
 
 def get_transforms_data():
     # Installs the schema files in jwst/transforms
@@ -160,91 +168,118 @@ class PyTest(TestCommand):
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
-def find_library(name):
-    if not name:
-        return None
 
-    prefix = sys.prefix
-    dynamic_link_env = [
-        # Linux
-        'LD_LIBRARY_PATH',
+def get_version(package):
+    module = importlib.import_module(package)
+    return verhawk.scanner.Scanner(module).versions[package]
+
+
+def sanitize_package_name(package):
+    '''Sanitize package name by:
+        - Converting dashes to underscores
+        - Omitting version constraints
+    '''
+    package = package.replace('-', '_')
+
+    constraints = ' !<>=,'
+    for char in constraints:
+        pos = package.find(char)
+        if pos >= 0:
+            package = package[0:pos]
+    return package
+
+
+def get_version_bin(path):
+    '''Brute-force the version string out of a program
+    '''
+    version = None
+    version_standards = [
+        # GNU
+        '--version', '-V',
         # Darwin
-        'DYLD_LIBRARY_PATH',
-        'DYLD_FALLBACK_LIBRARY_PATH',
-        # Windows
-        'LIBRARY_PATH',
-        'PATH'
-    ]
-    libexts = [
-        'so',
-        'dylib',
-        'dll',
-    ]
-    libdirs = [
-        os.path.join(prefix, 'lib'),
-        os.path.join(prefix, 'lib64'),
+        '-version', '-Version',
     ]
 
-    # Search for shared libraries beyond Python's installation prefix
-    for dlvar in dynamic_link_env:
-        result = os.environ.get(dlvar, '')
-        if result:
-            libdirs += result.split(os.pathsep)
+    if sys.platform.startswith('win'):
+        version_standards = [
+            '/version', '/V', '/Version'
+        ]
 
-    if not name.startswith('lib'):
-        name = ''.join(['lib', name])
+    for version_standard in version_standards:
+        cmd = [path, version_standard]
+        try:
+            version = check_output(cmd).decode()
+        except CalledProcessError as cpe:
+            # Did not exit gracefully... so on to the next
+            continue
 
-    for libdir in [x for x in libdirs if os.path.exists(x)]:
-        for libext in libexts:
-            ext = '*.'.join(['', libext])
-            for root, dirs, files in os.walk(libdir):
-                for fname in files:
-                    fname_no_ext = fname.split('.', 1)[0]
-                    if fname_no_ext == name:
-                        if fnmatch.fnmatch(fname, ext):
-                            return root, \
-                                   os.path.basename(fname), \
-                                   fname_no_ext
-    return None
+        if version:
+            version = version.splitlines()[0]
+            break
+
+    return version
+
+
+def get_package(package, hint='python'):
+    hints = ['python', 'bin', 'lib']
+    result = None
+
+    if hint not in hints:
+        raise ValueError('Invalid hint: "{}" (try: {})'.format(hint, ','.join(hints)))
+
+    if hint == 'python':
+        try:
+            result = os.path.dirname(importlib.import_module(package).__file__)
+        except ImportError:
+            # result will be None
+            pass
+
+    elif hint == 'bin':
+        result = find_executable(package)
+
+    elif hint == 'lib':
+        result = find_library(package)
+
+    return result
 
 
 def summary():
-    from verhawk.scanner import Scanner
-
-    stop_char = ' !<>='
-    fmt = '    {:.<30s}{:<10} @{}\n'
-    vh = None
+    fmt = '    {:.<30s}{:<10} [{}]\n'
     output = '\n\n========= Build Summary =========\n\n'
 
     # Python packages
-    output += '[REQUIRED] Dependencies:\n\n'
-    for name in sorted(INSTALL_REQUIRES):
-        status = 'Missing'
-        name = name.replace('-', '_')
+    if INSTALL_REQUIRES:
+        output += 'Python Dependencies:\n\n'
+        output += 'Search prefix: {}\n\n'.format(sys.prefix)
+        for name in sorted(INSTALL_REQUIRES):
+            name = sanitize_package_name(name)
+            location = get_package(name, hint='python')
+            state = location == 'Missing' or 'Installed'
 
-        # Sanitize package name omitting version constraints
-        for ch in stop_char:
-            pos = name.find(ch)
-            if pos >= 0:
-                name = name[0:pos]
+            if location:
+                ver = get_version(name) or 'Unavailable'
 
-
-        module = importlib.import_module(name)
-        vh = Scanner(module).versions
-
-        if vh:
-            status = 'Installed'
-
-        output += fmt.format(name, status, vh[name] or 'Unknown')
-
-    output += '\n[OPTIONAL] Dependencies:\n\n'
+            output += fmt.format(name, state, ver)
 
     # Binaries
-    fmt = '    {:.<30s}{:<10}\n'
-    for key, value in EXTERN_BIN_REQUIRES.items():
-        status = find_executable(value) == 'Installed' or 'Missing'
-        output += fmt.format(key, status)
+    if EXTERN_BIN_REQUIRES:
+        output += '\nExternal Binary Dependencies:\n\n'
 
+        for package, realname in EXTERN_BIN_REQUIRES.items():
+            fmt = '    {:.<30s}{:<10}'
+            location = get_package(realname, 'bin')
+            state = location == 'Missing' or 'Installed'
+
+            if location:
+                fmt += ' [{}]\n'
+                ver = get_version_bin(realname) or 'Unavailable'
+                output += fmt.format(package, state, ver)
+            else:
+                fmt += '\n'
+                output += fmt.format(package, state)
+
+    if TESTS_REQUIRE:
+        pass
     print(output)
 
 
