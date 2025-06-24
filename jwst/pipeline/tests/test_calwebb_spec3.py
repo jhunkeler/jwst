@@ -8,7 +8,7 @@ from jwst.datamodels import SourceModelContainer
 from jwst.datamodels.utils.tests.wfss_helpers import wfss_multi
 
 from jwst.stpipe import Step
-from jwst.extract_1d.tests.conftest import mock_nis_wfss_l2
+from jwst.extract_1d.tests.conftest import mock_niriss_wfss_l2, mock_nirspec_fs_one_slit, simple_wcs
 
 
 INPUT_WFSS = "mock_wfss_cal.fits"

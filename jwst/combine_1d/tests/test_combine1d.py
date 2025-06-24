@@ -205,11 +205,7 @@ def create_spec_model(npoints=10, flux=1e-9, error=1e-10, wave_range=(11, 13)):
     spec_model = datamodels.SpecModel(spec_table=otab)
 
     return spec_model
-
-
-@pytest.fixture
-def wfss_multiexposure():
-    return wfss_multi()
+        
 
 
 def test_wfss_multi_input(wfss_multiexposure):
