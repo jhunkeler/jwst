@@ -34,7 +34,6 @@ from jwst.associations.lib.rules_level3_base import (
     dms_product_name_nrsfs_sources,
     dms_product_name_noopt,
     dms_product_name_coronimage,
-    dms_product_name_wfss,
     format_product,
 )
 
@@ -59,7 +58,6 @@ __all__ = [
     "Asn_Lv3TSO",
     "Asn_Lv3WFSCMB",
     "Asn_Lv3WFSSNIS",
-    "Asn_Lv3WFSSNRC",
 ]
 
 # Configure logging
@@ -811,7 +809,7 @@ class Asn_Lv3SpectralSource(AsnMixin_Spectrum):
                         DMSAttrConstraint(
                             name="exp_type",
                             sources=["exp_type"],
-                            value=("nrs_autoflat|nrs_autowave"),
+                            value=("nrc_wfss|nrs_autoflat|nrs_autowave"),
                             force_unique=False,
                         ),
                         Constraint_MSA(),
@@ -1163,55 +1161,9 @@ class Asn_Lv3WFSCMB(AsnMixin_Science):
 
 
 @RegistryMarker.rule
-class Asn_Lv3WFSSNRC(AsnMixin_Spectrum):
-    """
-    Level 3 NIRCam WFSS/Grism Association.
-
-    Characteristics:
-        - Association type: ``spec3``
-        - Pipeline: ``calwebb_spec3``
-        - Gather all grism exposures
-    """
-
-    def __init__(self, *args, **kwargs):
-        # Setup for checking.
-        self.constraints = Constraint(
-            [
-                Constraint_Target(association=self),
-                DMSAttrConstraint(
-                    name="exp_type",
-                    sources=["exp_type"],
-                    value="nrc_wfss",
-                ),
-                DMSAttrConstraint(
-                    name="opt_elem",
-                    sources=["pupil"],
-                    value="GRISMR|GRISMC",
-                    force_unique=True,
-                ),
-            ]
-        )
-
-        # Check and continue initialization.
-        super().__init__(*args, **kwargs)
-
-    @property
-    def dms_product_name(self):
-        """
-        Return product name.
-
-        Returns
-        -------
-        str
-            The product name.
-        """
-        return dms_product_name_wfss(self)
-
-
-@RegistryMarker.rule
 class Asn_Lv3WFSSNIS(AsnMixin_Spectrum):
     """
-    Level 3 NIRISS WFSS/Grism Association.
+    Level 3 WFSS/Grism Association.
 
     Characteristics:
         - Association type: ``spec3``
@@ -1248,14 +1200,14 @@ class Asn_Lv3WFSSNIS(AsnMixin_Spectrum):
     @property
     def dms_product_name(self):
         """
-        Provide product name.
+        Provide product name by source.
 
         Returns
         -------
         str
-            Product name.
+            Product name using source id.
         """
-        return dms_product_name_wfss(self)
+        return dms_product_name_sources(self)
 
 
 @RegistryMarker.rule

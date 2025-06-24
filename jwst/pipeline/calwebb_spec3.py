@@ -2,7 +2,7 @@
 from collections import defaultdict
 from pathlib import Path
 
-import stdatamodels.jwst.datamodels as dm
+from stdatamodels.jwst import datamodels
 
 from jwst.datamodels import SourceModelContainer
 from jwst.stpipe import query_step_status
@@ -26,18 +26,11 @@ from jwst.photom import photom_step
 from jwst.spectral_leak import spectral_leak_step
 from jwst.pixel_replace import pixel_replace_step
 
-from jwst.datamodels.utils.wfss_multispec import make_wfss_multiexposure, make_wfss_multicombined
-
-import logging
-
-log = logging.getLogger(__name__)
-
 __all__ = ["Spec3Pipeline"]
 
 # Group exposure types
 IFU_EXPTYPES = ["MIR_MRS", "NRS_IFU"]
 SLITLESS_TYPES = ["NIS_SOSS", "NIS_WFSS", "NRC_WFSS"]
-WFSS_TYPES = ["NIS_WFSS", "NRC_WFSS"]
 
 
 class Spec3Pipeline(Pipeline):
@@ -118,7 +111,7 @@ class Spec3Pipeline(Pipeline):
         # could either be done via LoadAsAssociation and then manually
         # load input members into models and ModelContainer, or just
         # do a direct open of all members in ASN file, e.g.
-        input_models = dm.open(input_data, asn_exptypes=asn_exptypes)
+        input_models = datamodels.open(input_data, asn_exptypes=asn_exptypes)
 
         # Immediately update the ASNTABLE keyword value in all inputs,
         # so that all outputs get the new value
@@ -180,13 +173,13 @@ class Spec3Pipeline(Pipeline):
         # sources, each represented by a MultiExposureModel instead of
         # a single ModelContainer.
         sources = [source_models]
-        if isinstance(input_models[0], dm.MultiSlitModel):
+        if isinstance(input_models[0], datamodels.MultiSlitModel):
             self.log.info("Convert from exposure-based to source-based data.")
-            sources = list(multislit_to_container(source_models).items())
+            sources = [
+                (name, model) for name, model in multislit_to_container(source_models).items()
+            ]
 
         # Process each source
-        wfss_x1d = []
-        wfss_comb = []
         for source in sources:
             # If each source is a SourceModelContainer,
             # the output name needs to be updated based on the source ID,
@@ -217,8 +210,8 @@ class Spec3Pipeline(Pipeline):
             else:
                 result = source
 
-            # The MultiExposureModel is a required output, except for WFSS modes.
-            if isinstance(result, SourceModelContainer) and (exptype not in WFSS_TYPES):
+            # The MultiExposureModel is a required output.
+            if isinstance(result, SourceModelContainer):
                 self.save_model(result, "cal")
 
             # Call the skymatch step for MIRI MRS data
@@ -282,27 +275,16 @@ class Spec3Pipeline(Pipeline):
                         self.photom.save_results = self.save_results
                         self.photom.suffix = "x1d"
                         result = self.photom.run(result)
-                        result = self.combine_1d.run(result)
-
                 else:
-                    # for WFSS modes, do not save the results with one file per source
-                    # instead compile the results over the for loop to be put into a single file
-                    # at the end.
-                    self.extract_1d.save_results = False
-                    self.combine_1d.save_results = False
                     result = self.extract_1d.run(result)
-                    wfss_x1d.append(result)
+
                     # Check whether extraction was completed
                     extraction_complete = (
                         result is not None and result.meta.cal_step.extract_1d == "COMPLETE"
                     )
-                    if extraction_complete:
-                        # Combine the results for all sources
-                        comb = self.combine_1d.run(result)
-                        # add metadata that only WFSS wants
-                        comb.spec[0].source_ra = result.spec[0].spec_table["SOURCE_RA"][0]
-                        comb.spec[0].source_dec = result.spec[0].spec_table["SOURCE_DEC"][0]
-                        wfss_comb.append(comb)
+
+                if extraction_complete:
+                    result = self.combine_1d.run(result)
 
             elif resample_complete is not None and resample_complete.upper() == "COMPLETE":
                 # If 2D data were resampled and combined, just do a 1D extraction
@@ -326,20 +308,6 @@ class Spec3Pipeline(Pipeline):
                 result = self.combine_1d.run(result)
             else:
                 self.log.warning("Resampling was not completed. Skipping extract_1d.")
-
-        # Save the final output products for WFSS modes
-        if exptype in WFSS_TYPES:
-            # outstem = output_file.replace("_{source_id}", "_t0000")
-            if self.save_results:
-                x1d_output = make_wfss_multiexposure(wfss_x1d)
-                x1d_filename = output_file + "_x1d.fits"
-                self.log.info(f"Saving the final x1d product as {x1d_filename}.")
-                x1d_output.save(x1d_filename)
-            if self.save_results:
-                c1d_output = make_wfss_multicombined(wfss_comb)
-                c1d_filename = output_file + "_c1d.fits"
-                self.log.info(f"Saving the final c1d product as {c1d_filename}.")
-                c1d_output.save(c1d_filename)
 
         input_models.close()
 
