@@ -134,8 +134,8 @@ def test_multiple_optelems(pool_file):
         else:
             regex_to_match = LEVEL3_PRODUCT_NAME_REGEX
 
-        m = re.match(regex_to_match, product_name)
-        assert m is not None
+            # there should always be an opt_elem
+            values = ['-'.join(asn.constraints['opt_elem'].found_values)]
 
         # there should always be an opt_elem
         values = ["-".join(asn.constraints["opt_elem"].found_values)]

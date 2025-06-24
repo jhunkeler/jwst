@@ -1056,8 +1056,7 @@ class AsnMixin_Lv2Nod:
 
         For NIRSpec fixed slit or MOS data, this returns True if the
         background candidate shares a primary dither point with the
-        science or if the target ID does not match between science
-        and background candidate.
+        science.
 
         In addition, for NIRSpec fixed slit exposures taken with slit
         S1600A1 in a 5-point nod pattern, this returns True when the

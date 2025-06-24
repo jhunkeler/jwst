@@ -695,7 +695,6 @@ def dms_product_name_nrsfs_sources(asn):
         product_name_format,
         program=asn.data["program"],
         acid=asn.acid.id,
-        target=target,
         instrument=instrument,
         opt_elem=opt_elem,
         subarray=subarray,
