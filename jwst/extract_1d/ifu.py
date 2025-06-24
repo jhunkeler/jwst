@@ -374,7 +374,6 @@ def ifu_extract1d(
 
     if slitname is not None and slitname != "ANY":
         spec.name = slitname
-    spec.detector = input_model.meta.instrument.detector
 
     spec.source_type = source_type
     spec.extraction_x = x_center

@@ -54,12 +54,12 @@ class PhotomStep(Step):
             | datamodels.ImageModel
             | datamodels.IFUImageModel
             | datamodels.MultiSlitModel
-            | datamodels.TSOMultiSpecModel,
+            | datamodels.MultiSpecModel,
         ):
             self.log.warning(
                 "Input is not one of the supported model types: "
                 "CubeModel, ImageModel, IFUImageModel, "
-                "SlitModel, MultiSlitModel, or TSOMultiSpecModel."
+                "SlitModel, MultiSlitModel, or MultiSpecModel."
             )
 
         # Setup reference files and whether previous correction information

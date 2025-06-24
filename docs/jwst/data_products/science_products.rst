@@ -503,21 +503,18 @@ in binary table extensions of FITS files. The overall layout of the FITS file is
 |  2  | ASDF        | BINTABLE | N/A       | variable      |
 +-----+-------------+----------+-----------+---------------+
 
- - EXTRACT1D: A table containing the extracted spectral data.
+ - EXTRACT1D: A 2-D table containing the extracted spectral data.
  - ADSF: The data model meta data.
 
 Multiple "EXTRACT1D" extensions can be present if there is data for more than one source,
 segment, spectral order, or exposure. For ``x1dints`` products, there is one "EXTRACT1D"
 extension that holds spectra for all integrations in the exposure.
 
-For ``x1d`` products, the table is constructed using a simple 2-D layout,
-using one row per extracted spectral element in the dispersion direction of the data
-(i.e. one row per wavelength bin). The structure of the "EXTRACT1D" table extension
-is as follows:
+The structure of the "EXTRACT1D" table extension is as follows:
 
 +-------------------+-----------+--------------------+---------------+
 | Column Name       | Data Type | Contents           | Units         |
-+===================+===========+====================+===============+
++===================+===========+===================+================+
 | WAVELENGTH        | float64   | Wavelength values  | :math:`\mu` m |
 +-------------------+-----------+--------------------+---------------+
 | FLUX              | float64   | Flux values        | Jy            |

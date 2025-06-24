@@ -3,10 +3,10 @@ import os
 import numpy as np
 import pytest
 import stdatamodels.jwst.datamodels as dm
+from jwst.regtest.st_fitsdiff import STFITSDiff as FITSDiff
 
 from jwst.flatfield import FlatFieldStep
 from jwst.lib.suffix import replace_suffix
-from jwst.regtest.st_fitsdiff import STFITSDiff as FITSDiff
 from jwst.stpipe import Step
 
 # Mark all tests in this module
@@ -93,8 +93,8 @@ def test_nirspec_brightobj_spec2(run_tso_spec2_pipeline, fitsdiff_default_kwargs
     fixed-slit data that uses the NRS_BRIGHTOBJ mode (S1600A1 slit).
     """
     rtdata = run_tso_spec2_pipeline
-    basename = "jw02420001001_04101_00001-first100_nrs1"
-    output = f"{basename}_{suffix}.fits"
+    output = replace_suffix(
+        os.path.splitext(os.path.basename(rtdata.input))[0], suffix) + '.fits'
     rtdata.output = output
 
     # Get the truth files

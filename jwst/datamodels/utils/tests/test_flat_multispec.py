@@ -7,9 +7,7 @@ import stdatamodels.jwst.datamodels as dm
 from jwst.datamodels.utils.flat_multispec import (
     set_schema_units,
     copy_column_units,
-    copy_spec_metadata,
     determine_vector_and_meta_columns,
-    expand_flat_spec,
     make_empty_recarray,
     populate_recarray,
 )
@@ -42,11 +40,8 @@ def empty_recarray(request):
 
 @pytest.fixture()
 def input_spec():
-    """Make an input SpecModel with some metadata and column units."""
     spec = dm.SpecModel()
     spec.spec_table = np.zeros((10,), dtype=spec.spec_table.dtype)
-    spec.name = "test_slit"
-    spec.source_id = 1
 
     # Set some units
     for column in spec.spec_table.columns:
@@ -56,7 +51,6 @@ def input_spec():
 
 @pytest.fixture()
 def output_spec():
-    """Make an output MRSSpecModel with only a bare spec_table."""
     spec = dm.MRSSpecModel()
     spec.spec_table = np.zeros((5,), dtype=spec.spec_table.dtype)
     return spec
@@ -108,6 +102,7 @@ def test_determine_vector_and_meta_columns():
     # Check that the names ended up in the right place
     input_names = [s["name"] for s in in_cols]
     output_names = [s["name"] for s in out_cols]
+    all_names = [s[0] for s in all_columns]
     vector_columns = all_columns[is_vector]
     meta_columns = all_columns[~is_vector]
     vector_names = [s[0].upper() for s in vector_columns]

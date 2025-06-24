@@ -2,11 +2,9 @@
 
 import logging
 import warnings
-from copy import deepcopy
-
 import numpy as np
 from asdf.tags.core.ndarray import asdf_datatype_to_numpy_dtype
-from stdatamodels.jwst import datamodels
+
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)

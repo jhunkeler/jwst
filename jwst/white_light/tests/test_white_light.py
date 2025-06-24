@@ -1,28 +1,24 @@
-import logging
+from stdatamodels.jwst import datamodels
+
+from jwst.white_light.white_light import white_light
 
 import numpy as np
 from numpy.testing import assert_allclose
 import pytest
-from stdatamodels.jwst import datamodels
-
-from jwst.datamodels.utils.tso_multispec import make_tso_specmodel
-from jwst.extract_1d.extract import populate_time_keywords
+import logging
 from jwst.tests.helpers import LogWatcher
-from jwst.white_light.white_light import white_light
 
 
 @pytest.fixture(scope="module")
 def make_datamodel():
     """Make data for white light tests"""
-    n_spec = 5
 
-    model = datamodels.TSOMultiSpecModel()
+    model = datamodels.MultiSpecModel()
     model.meta.exposure.group_time = 0.15904
     model.meta.exposure.ngroups = 60
     model.meta.exposure.start_time = 58627.0
     model.meta.exposure.integration_start = 1
     model.meta.exposure.integration_end = 2
-    model.meta.exposure.nints = n_spec
 
     # Make data arrays
     n_points = 20
@@ -46,8 +42,7 @@ def make_datamodel():
     b_var_flat = sb_error.copy()
     npixels = np.zeros(n_points)
 
-    # This data type is used for creating an output table.
-    spec_dtype = datamodels.SpecModel().spec_table.dtype
+    spec_dtype = datamodels.SpecModel().spec_table.dtype  # This data type is used for creating an output table.
 
     otab = np.array(
         list(
@@ -77,14 +72,10 @@ def make_datamodel():
 
     spec_model = datamodels.SpecModel(spec_table=otab)
     spec_model.spectral_order = 1
+    n_spec = 5
+    [model.spec.append(spec_model.copy()) for _ in range(n_spec)]
 
-    spec_list_1 = [spec_model.copy() for _ in range(n_spec)]
-
-    # change spectral order to test multiple orders in output table
-    spec_model.spectral_order = 2
-    spec_list_2 = [spec_model.copy() for _ in range(n_spec)]
-
-    times = np.linspace(0, 1, n_spec + 1)
+    times = np.linspace(0, 1, n_spec+1)
     start_times = times[:-1]
     end_times = times[1:]
     mid_times = (start_times + end_times) / 2.0
@@ -115,11 +106,19 @@ def make_datamodel():
         ],
     )
 
-    # make the tso spec models: one per order
-    tso_spec_model_1 = make_tso_specmodel(spec_list_1)
-    model.spec.append(tso_spec_model_1)
-    tso_spec_model_2 = make_tso_specmodel(spec_list_2)
-    model.spec.append(tso_spec_model_2)
+    # also populate spec_meta with the same integration times
+    for i, spec in enumerate(model.spec):
+        # skip one integration to test warning raise
+        if i == 2:
+            continue
+        # change one spectral order to test spectral ordering
+        if i == 3:
+            spec.spectral_order = 2
+        
+        spec.int_num = integration_table["integration_number"][i]
+        spec.start_time_mjd = integration_table["int_start_MJD_UTC"][i]
+        spec.end_time_mjd = integration_table["int_end_MJD_UTC"][i]
+        spec.mid_time_mjd = integration_table["int_mid_MJD_UTC"][i]
 
     # update the integration times in the table
     input_model = datamodels.CubeModel((n_spec, 10, 10))
@@ -151,7 +150,7 @@ def test_white_light(make_datamodel, monkeypatch):
     """Test white light step"""
     data = make_datamodel
 
-    watcher = LogWatcher("There were 1 spectra in order 1 with no mid time (20")
+    watcher = LogWatcher("There were 1 spectra with no mid time (20")
     monkeypatch.setattr(logging.getLogger("jwst.white_light.white_light"), "warning", watcher)
     result = white_light(data)
     watcher.assert_seen()
@@ -161,17 +160,17 @@ def test_white_light(make_datamodel, monkeypatch):
     start_times = times[:-1]
     end_times = times[1:]
     mid_times = (start_times + end_times) / 2.0
+    mid_times = mid_times[mid_times != 0.5]  # remove the mid time for the skipped integration
 
-    # remove the mid time for the skipped integration,
-    # add the adjusted midtime for order 2
-    mid_times[2] = 0.51
     expected_tdb = mid_times + 3.0
+    expected_tdb[0] = np.nan  # spec did not have mid_tdb for first integration
 
-    np.testing.assert_allclose(result["MJD_UTC"], mid_times)
-    np.testing.assert_allclose(result["BJD_TDB"], expected_tdb, equal_nan=True)
+    np.testing.assert_allclose(result["int_mid_MJD_UTC"], mid_times)
+    np.testing.assert_allclose(result["int_mid_BJD_TDB"], expected_tdb, equal_nan=True)
     assert result["whitelight_flux_order_1"].shape == (len(mid_times),)
     assert result["whitelight_flux_order_2"].shape == (len(mid_times),)
     assert np.sum(np.isnan(result["whitelight_flux_order_1"])) == 1
+    assert np.sum(~np.isnan(result["whitelight_flux_order_2"])) == 1
 
     # check fluxes are summed appropriately
     expected_flux_per_spec = np.sum(np.arange(1, 21, dtype=np.float32))
@@ -182,8 +181,10 @@ def test_white_light(make_datamodel, monkeypatch):
         * len(mid_times)
     )
     expected_flux_order_1 = expected_flux.copy()
-    expected_flux_order_1[-3] = np.nan  # the third was order 2 only
+    expected_flux_order_1[-2] = np.nan  # the second-to-last was order 2
     expected_flux_order_2 = expected_flux.copy()
+    expected_flux_order_2[:-2] = np.nan
+    expected_flux_order_2[-1] = np.nan  
 
     assert_allclose(result["whitelight_flux_order_1"], expected_flux_order_1, equal_nan=True)
     assert_allclose(result["whitelight_flux_order_2"], expected_flux_order_2, equal_nan=True)

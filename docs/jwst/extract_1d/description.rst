@@ -72,38 +72,12 @@ for point sources observed with NIRSpec and NIRISS SOSS, units of flux density
 
 Output
 ------
-
-Output data for this step are in the form of :ref:`x1d`.
-
-Data structure
-^^^^^^^^^^^^^^
-
-The output for most modes will be in ``MultiSpecModel`` format. This datamodel collects
-multiple spectra in a list, stored in the ``spec`` attribute.  The data for each spectrum
-is stored in a table under the ``spec_table`` attribute for the spectrum.  The spectral models
-in the ``spec`` attribute also hold related metadata, such as the slit name (``name``) or the
-source ID (``source_id``).
-
-In the output file, the spectral data is stored as a table extension with the name EXTRACT1D.
-This extension will have columns WAVELENGTH, FLUX, FLUX_ERROR, FLUX_VAR_POISSON, FLUX_VAR_RNOISE,
+The output will be in ``MultiSpecModel`` format. For each input slit there will
+be an output table extension with the name EXTRACT1D.  This extension will
+have columns WAVELENGTH, FLUX, FLUX_ERROR, FLUX_VAR_POISSON, FLUX_VAR_RNOISE,
 FLUX_VAR_FLAT, SURF_BRIGHT, SB_ERROR, SB_VAR_POISSON, SB_VAR_RNOISE,
 SB_VAR_FLAT, DQ, BACKGROUND, BKGD_ERROR, BKGD_VAR_POISSON, BKGD_VAR_RNOISE,
-BKGD_VAR_FLAT and NPIXELS.
-
-For example, to access the slit name, wavelength, and flux from each spectrum in a model:
-
-.. doctest-skip::
-
-  >>> from stdatamodels.jwst import datamodels
-  >>> multi_spec = datamodels.open('multi_spec_x1d.fits')
-  >>> for spectrum in multi_spec.spec:
-  >>>     slit_name = spectrum.name
-  >>>     wave = spectrum.spec_table["WAVELENGTH"]
-  >>>     flux = spectrum.spec_table["FLUX"]
-
-
-In the case of MIRI MRS data, the output is a ``MRSMultiSpecModel``. This model has the
-same structure as a ``MultiSpecModel``, except that there are three additional
+BKGD_VAR_FLAT and NPIXELS. In the case of MIRI MRS data there are three additional
 columns in the output table:  RF_FLUX, RF_SURF_BRIGHT, and RF_BACKGROUND.
 For more details on the MIRI MRS extracted data see :ref:`MIRI-MRS-1D-residual-fringe`.
 
